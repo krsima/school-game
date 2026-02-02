@@ -39,15 +39,17 @@ export function create(scene) {
 
 export function movement() {
   if (cursors.left.isDown || keyA.isDown) {
-    player.body.setVelocityX(-400);
+    player.body.setVelocityX(Math.max(-400, player.body.velocity.x - 40));
     player.anims.play("walk", true);
     player.flipX = true;
   } else if (cursors.right.isDown || keyD.isDown) {
-    player.body.setVelocityX(400);
+    player.body.setVelocityX(Math.min(400, player.body.velocity.x + 40));
     player.anims.play("walk", true);
     player.flipX = false;
   } else {
-    player.body.setVelocityX(player.body.velocity.x * 0.8);
+    var deacceleration = player.body.onFloor() ? 40 : 10;
+    var newVelocity = Math.max(Math.abs(player.body.velocity.x) - deacceleration, 0);
+    player.body.setVelocityX(player.body.velocity.x > 0 ? newVelocity : -newVelocity);
     player.anims.play("idle", true);
   }
   // jump
