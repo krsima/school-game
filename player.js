@@ -1,0 +1,60 @@
+var player;
+
+var cursors;
+
+let keyA;
+let keySpace;
+let keyD;
+let keyW;
+export function create(scene) {
+  // Player
+  player = scene.physics.add.sprite(200, 800, "player");
+  player.setBounce(0.04);
+  player.setCollideWorldBounds(true);
+  player.body.setSize(player.width, player.height - 8);
+  keyA = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+  keySpace = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  keyD = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+  keyW = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+  cursors = scene.input.keyboard.createCursorKeys();
+
+  scene.anims.create({
+    key: "walk",
+    frames: scene.anims.generateFrameNames("player", {
+      prefix: "p1_walk",
+      start: 1,
+      end: 11,
+      zeroPad: 2,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "idle",
+    frames: [{ key: "player", frame: "p1_stand" }],
+    frameRate: 10,
+  });
+  return player;
+}
+
+export function movement() {
+  if (cursors.left.isDown || keyA.isDown) {
+    player.body.setVelocityX(-400);
+    player.anims.play("walk", true);
+    player.flipX = true;
+  } else if (cursors.right.isDown || keyD.isDown) {
+    player.body.setVelocityX(400);
+    player.anims.play("walk", true);
+    player.flipX = false;
+  } else {
+    player.body.setVelocityX(player.body.velocity.x * 0.8);
+    player.anims.play("idle", true);
+  }
+  // jump
+  if (
+    (cursors.up.isDown || keyW.isDown || keySpace.isDown) &&
+    player.body.onFloor()
+  ) {
+    player.body.setVelocityY(-950);
+  }
+}
