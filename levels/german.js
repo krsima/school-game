@@ -3,7 +3,7 @@ import { create as createPlayer, movement } from "../player.js";
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
 
-export class OutsideSchool extends Phaser.Scene {
+export class GermanLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/background.jpg");
@@ -15,7 +15,7 @@ export class OutsideSchool extends Phaser.Scene {
     this.physics.world.TILE_BIAS = 32;
     this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-    this.cameras.main.setZoom(1.3);
+    this.cameras.main.setZoom(0.6);
 
     //Background
     this.add.image(1024, 500, "background");
