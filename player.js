@@ -1,4 +1,7 @@
+import { GermanLesson } from "./levels/german.js";
+
 var player;
+let tscene;
 
 var cursors;
 
@@ -6,7 +9,11 @@ let keyA;
 let keySpace;
 let keyD;
 let keyW;
+
+// Debug
+let keyTab;
 export function create(scene) {
+  tscene = scene;
   // Player
   player = scene.physics.add.sprite(200, 800, "player");
   player.setBounce(0.04);
@@ -16,6 +23,10 @@ export function create(scene) {
   keySpace = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   keyD = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
   keyW = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+
+  // Debug
+  keyTab = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
+
   cursors = scene.input.keyboard.createCursorKeys();
 
   scene.anims.create({
@@ -58,5 +69,10 @@ export function movement() {
     player.body.onFloor()
   ) {
     player.body.setVelocityY(-950);
+  }
+  
+  // Debug
+  if (keyTab.isDown) {
+    tscene.scene.start("GermanLesson")
   }
 }

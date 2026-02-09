@@ -1,3 +1,4 @@
+import { GermanLesson } from "./levels/german.js";
 import { OutsideSchool } from "./levels/outside-school.js";
 
 const config = {
@@ -8,7 +9,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
-  scene: OutsideSchool,
+  scene: [ OutsideSchool, GermanLesson ],
   physics: {
     default: "arcade",
     arcade: {

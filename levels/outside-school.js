@@ -4,6 +4,11 @@ const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
 
 export class OutsideSchool extends Phaser.Scene {
+
+  constructor( ...args ) {
+    super({ key: 'OutsideSchool', ...args })
+  }
+
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/background.jpg");
