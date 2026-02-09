@@ -8,6 +8,8 @@ export class OutsideSchool extends Phaser.Scene {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/background.jpg");
     this.load.image("backpack", "assets/backpack.png")
+    this.load.image("plank", "assets/plank.png")
+    this.load.image("door", "assets/door.jpg")
   }
 
   create() {
@@ -57,11 +59,22 @@ export class OutsideSchool extends Phaser.Scene {
     });
 
     this.platforms = this.physics.add.staticGroup();
+    this.doors = this.physics.add.staticGroup();
 
     // Platforms
-    this.platforms.create(400, 668, 'backpack').setScale(0.2).refreshBody();
-
+    this.platforms.create(550, 868, 'backpack').setScale(0.1).refreshBody();
+    this.platforms.create(650, 860, 'backpack').setScale(0.08).refreshBody();
+    this.platforms.create(800, 800, 'plank').setScale(0.2).refreshBody();
+    this.platforms.create(870, 800, 'plank').setScale(0.2).refreshBody();
+    this.platforms.create(940, 800, 'plank').setScale(0.2).refreshBody();
+    this.platforms.create(1080, 765, 'backpack').setScale(0.1).refreshBody();
+    this.platforms.create(800, 600, 'backpack').setScale(0.08).refreshBody();
+    this.platforms.create(550, 450, 'backpack').setScale(0.08).refreshBody();
+    this.platforms.create(240, 440, 'plank').setScale(0.17).refreshBody();
+    this.doors.create(240, 370, 'door').setScale(0.1).refreshBody();
     this.physics.add.collider(player, this.platforms);
+
+    this.physics.add.overlap(player, this.doors, () => {this.scene.start("GermanLesson")});
   }
 
   update(time, delta) {
