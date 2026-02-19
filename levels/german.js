@@ -36,10 +36,7 @@ export class GermanLesson extends Phaser.Scene {
     const chairPositions = [200, 400, 600, 900, 1100, 1400, 1600, 1800];
     this.chairs = chairPositions.map((x) => {
       const chair = this.matter.add.image(x, 668, "chair");
-      chair
-        .setScale(0.2)
-        .setFrictionAir(0.05)
-        .setBounce(0.5);
+      chair.setScale(0.2).setBounce(0.5);
       return chair;
     });
 
@@ -60,11 +57,10 @@ export class GermanLesson extends Phaser.Scene {
         console.log("failed");
         return;
       }
-      chair.setVelocity(0, Math.max(0.8, Math.random()) * 67);
+      chair.setVelocity(0, Math.max(0.8, Math.random()) * -45);
       this.time.delayedCall(500, () => {
         chair.setVelocityX(
-          Math.ceil(Math.random() * 33) *
-            (Math.round(Math.random()) ? 1 : -1),
+          Math.ceil(Math.random() * 33) * (Math.round(Math.random()) ? 1 : -1),
         );
         this.prev = false;
       });

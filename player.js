@@ -15,28 +15,41 @@ let keyW;
 let keyTab;
 export function create(scene) {
   tscene = scene;
-  groundContacts = 0;
+  groundContacts = [];
 
   // Player
   player = scene.matter.add.sprite(200, 800, "player");
+  player.collisions = new Map();
   player.setFixedRotation();
+  player.setFriction(0.0);
   player.setBounce(0.04);
 
   // Ground detection via collision events
   scene.matter.world.on("collisionstart", (event) => {
-    for (const pair of event.pairs) {
-      if (pair.bodyA === player.body || pair.bodyB === player.body) {
-        groundContacts++;
+    event.pairs.forEach((pair) => {
+      const { bodyA, bodyB, collision } = pair;
+
+      if (bodyA.gameObject === player) {
+        player.collisions.set(bodyB.gameObject, collision.normal);
+      } else if (bodyB.gameObject === player) {
+        player.collisions.set(bodyA.gameObject, {
+          x: -collision.normal.x,
+          y: -collision.normal.y,
+        });
       }
-    }
+    });
   });
 
   scene.matter.world.on("collisionend", (event) => {
-    for (const pair of event.pairs) {
-      if (pair.bodyA === player.body || pair.bodyB === player.body) {
-        groundContacts--;
+    event.pairs.forEach((pair) => {
+      const { bodyA, bodyB } = pair;
+
+      if (bodyA.gameObject === player) {
+        player.collisions.delete(bodyB.gameObject);
+      } else if (bodyB.gameObject === player) {
+        player.collisions.delete(bodyA.gameObject);
       }
-    }
+    });
   });
 
   keyA = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -78,7 +91,7 @@ export function movement() {
     player.anims.play("walk", true);
     player.flipX = false;
   } else {
-    const deacceleration = groundContacts > 0 ? 0.7 : 0.17;
+    const deacceleration = isOnGround() ? 0.7 : 0.17;
     var newVelocity = Math.max(
       Math.abs(player.body.velocity.x) - deacceleration,
       0,
@@ -89,15 +102,21 @@ export function movement() {
     player.anims.play("idle", true);
   }
   // jump
-  if (
-    (cursors.up.isDown || keyW.isDown || keySpace.isDown) &&
-    groundContacts > 0
-  ) {
-    player.setVelocityY(-16);
+  if ((cursors.up.isDown || keyW.isDown || keySpace.isDown) && isOnGround()) {
+    player.setVelocityY(-18);
   }
 
   // Debug
   if (keyTab.isDown) {
     tscene.scene.start("ITLesson");
   }
+}
+
+function isOnGround() {
+  for (const normal of player.collisions.values()) {
+    if (normal.y < -0.5) {
+      return true;
+    }
+  }
+  return false;
 }
