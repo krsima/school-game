@@ -2,7 +2,6 @@ import { GermanLesson } from "./levels/german.js";
 
 var player;
 let tscene;
-let groundContacts = 0;
 
 var cursors;
 
@@ -15,7 +14,6 @@ let keyW;
 let keyTab;
 export function create(scene) {
   tscene = scene;
-  groundContacts = [];
 
   // Player
   player = scene.matter.add.sprite(200, 800, "player");
