@@ -59,8 +59,13 @@ export function movement() {
     player.flipX = false;
   } else {
     var deacceleration = player.body.onFloor() ? 40 : 10;
-    var newVelocity = Math.max(Math.abs(player.body.velocity.x) - deacceleration, 0);
-    player.body.setVelocityX(player.body.velocity.x > 0 ? newVelocity : -newVelocity);
+    var newVelocity = Math.max(
+      Math.abs(player.body.velocity.x) - deacceleration,
+      0,
+    );
+    player.body.setVelocityX(
+      player.body.velocity.x > 0 ? newVelocity : -newVelocity,
+    );
     player.anims.play("idle", true);
   }
   // jump
@@ -70,9 +75,9 @@ export function movement() {
   ) {
     player.body.setVelocityY(-950);
   }
-  
+
   // Debug
   if (keyTab.isDown) {
-    tscene.scene.start("GermanLesson")
+    tscene.scene.start("ITLesson");
   }
 }

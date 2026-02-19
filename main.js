@@ -1,6 +1,6 @@
 import { GermanLesson } from "./levels/german.js";
 import { OutsideSchool } from "./levels/outside-school.js";
-import { ITLesson } from "./levels/IT.js";
+import { ITLesson } from "./levels/it.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -10,7 +10,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
-  scene: [ OutsideSchool, GermanLesson, ITLesson ],
+  scene: [OutsideSchool, GermanLesson, ITLesson],
   physics: {
     default: "arcade",
     arcade: {
@@ -21,3 +21,4 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
