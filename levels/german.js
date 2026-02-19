@@ -16,8 +16,7 @@ export class GermanLesson extends Phaser.Scene {
 
   create() {
     // Settings
-    this.physics.world.TILE_BIAS = 16;
-    this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setZoom(1);
 
@@ -33,29 +32,17 @@ export class GermanLesson extends Phaser.Scene {
 
     // World
 
-    this.chairs = this.physics.add.group();
-
-    // Platforms
-    this.chairs.create(200, 668, "chair");
-    this.chairs.create(400, 668, "chair");
-    this.chairs.create(600, 668, "chair");
-    this.chairs.create(900, 668, "chair");
-    this.chairs.create(1100, 668, "chair");
-    this.chairs.create(1400, 668, "chair");
-    this.chairs.create(1600, 668, "chair");
-    this.chairs.create(1800, 668, "chair");
-
-    this.chairs.children.each((chair) => {
+    // Chairs (dynamic Matter bodies)
+    const chairPositions = [200, 400, 600, 900, 1100, 1400, 1600, 1800];
+    this.chairs = chairPositions.map((x) => {
+      const chair = this.matter.add.image(x, 668, "chair");
       chair
         .setScale(0.2)
         .setCollideWorldBounds(true)
-        .setDrag(500, 0)
-        .setBounce(0.5, 0.5)
-        //.setImmovable(true)
-        .refreshBody();
+        .setFrictionAir(0.05)
+        .setBounce(0.5);
+      return chair;
     });
-    this.physics.add.collider(this.player, this.chairs);
-    this.physics.add.collider(this.chairs, this.chairs);
 
     this.keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
   }
@@ -69,15 +56,15 @@ export class GermanLesson extends Phaser.Scene {
   }
 
   throwChairs() {
-    this.chairs.children.each((chair) => {
+    this.chairs.forEach((chair) => {
       if (Math.random() < 0.6) {
         console.log("failed");
         return;
       }
-      chair.body.setVelocity(0, Math.max(0.8, Math.random()) * 4000);
+      chair.setVelocity(0, Math.max(0.8, Math.random()) * 67);
       this.time.delayedCall(500, () => {
-        chair.body.setVelocityX(
-          Math.ceil(Math.random() * 2000) *
+        chair.setVelocityX(
+          Math.ceil(Math.random() * 33) *
             (Math.round(Math.random()) ? 1 : -1),
         );
         this.prev = false;

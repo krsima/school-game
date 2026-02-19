@@ -2,6 +2,7 @@ import { GermanLesson } from "./levels/german.js";
 
 var player;
 let tscene;
+let groundContacts = 0;
 
 var cursors;
 
@@ -14,11 +15,31 @@ let keyW;
 let keyTab;
 export function create(scene) {
   tscene = scene;
+  groundContacts = 0;
+
   // Player
-  player = scene.physics.add.sprite(200, 800, "player");
+  player = scene.matter.add.sprite(200, 800, "player");
+  player.setFixedRotation();
   player.setBounce(0.04);
   player.setCollideWorldBounds(true);
-  player.body.setSize(player.width, player.height - 8);
+
+  // Ground detection via collision events
+  scene.matter.world.on("collisionstart", (event) => {
+    for (const pair of event.pairs) {
+      if (pair.bodyA === player.body || pair.bodyB === player.body) {
+        groundContacts++;
+      }
+    }
+  });
+
+  scene.matter.world.on("collisionend", (event) => {
+    for (const pair of event.pairs) {
+      if (pair.bodyA === player.body || pair.bodyB === player.body) {
+        groundContacts--;
+      }
+    }
+  });
+
   keyA = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
   keySpace = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   keyD = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -50,20 +71,20 @@ export function create(scene) {
 
 export function movement() {
   if (cursors.left.isDown || keyA.isDown) {
-    player.body.setVelocityX(Math.max(-400, player.body.velocity.x - 40));
+    player.setVelocityX(Math.max(-7, player.body.velocity.x - 0.7));
     player.anims.play("walk", true);
     player.flipX = true;
   } else if (cursors.right.isDown || keyD.isDown) {
-    player.body.setVelocityX(Math.min(400, player.body.velocity.x + 40));
+    player.setVelocityX(Math.min(7, player.body.velocity.x + 0.7));
     player.anims.play("walk", true);
     player.flipX = false;
   } else {
-    var deacceleration = player.body.onFloor() ? 40 : 10;
+    const deacceleration = groundContacts > 0 ? 0.7 : 0.17;
     var newVelocity = Math.max(
       Math.abs(player.body.velocity.x) - deacceleration,
       0,
     );
-    player.body.setVelocityX(
+    player.setVelocityX(
       player.body.velocity.x > 0 ? newVelocity : -newVelocity,
     );
     player.anims.play("idle", true);
@@ -71,9 +92,9 @@ export function movement() {
   // jump
   if (
     (cursors.up.isDown || keyW.isDown || keySpace.isDown) &&
-    player.body.onFloor()
+    groundContacts > 0
   ) {
-    player.body.setVelocityY(-950);
+    player.setVelocityY(-16);
   }
 
   // Debug
