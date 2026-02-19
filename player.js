@@ -21,7 +21,6 @@ export function create(scene) {
   player = scene.matter.add.sprite(200, 800, "player");
   player.setFixedRotation();
   player.setBounce(0.04);
-  player.setCollideWorldBounds(true);
 
   // Ground detection via collision events
   scene.matter.world.on("collisionstart", (event) => {
