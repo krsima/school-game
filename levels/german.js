@@ -38,7 +38,6 @@ export class GermanLesson extends Phaser.Scene {
       const chair = this.matter.add.image(x, 668, "chair");
       chair
         .setScale(0.2)
-        .setCollideWorldBounds(true)
         .setFrictionAir(0.05)
         .setBounce(0.5);
       return chair;
