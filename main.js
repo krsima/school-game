@@ -12,13 +12,12 @@ const config = {
 
   scene: [OutsideSchool, GermanLesson, ITLesson],
   physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { y: 2000 },
+    default: "matter",
+    matter: {
+      gravity: { y: 2 },
       debug: false,
     },
   },
 };
 
 const game = new Phaser.Game(config);
-

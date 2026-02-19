@@ -4,23 +4,21 @@ const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
 
 export class OutsideSchool extends Phaser.Scene {
-
-  constructor( ...args ) {
-    super({ key: 'OutsideSchool', ...args })
+  constructor(...args) {
+    super({ key: "OutsideSchool", ...args });
   }
 
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/background.jpg");
-    this.load.image("backpack", "assets/backpack.png")
-    this.load.image("plank", "assets/plank.png")
-    this.load.image("door", "assets/door.jpg")
+    this.load.image("backpack", "assets/backpack.png");
+    this.load.image("plank", "assets/plank.png");
+    this.load.image("door", "assets/door.jpg");
   }
 
   create() {
     // Settings
-    this.physics.world.TILE_BIAS = 32;
-    this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setZoom(1.3);
 
@@ -63,23 +61,56 @@ export class OutsideSchool extends Phaser.Scene {
       add: true,
     });
 
-    this.platforms = this.physics.add.staticGroup();
-    this.doors = this.physics.add.staticGroup();
+    // Platforms (static Matter bodies)
+    this.matter.add
+      .image(550, 868, "backpack", null, { isStatic: true })
+      .setScale(0.1);
+    this.matter.add
+      .image(650, 860, "backpack", null, { isStatic: true })
+      .setScale(0.08);
+    this.matter.add
+      .image(800, 800, "plank", null, { isStatic: true })
+      .setScale(0.2);
+    this.matter.add
+      .image(870, 800, "plank", null, { isStatic: true })
+      .setScale(0.2);
+    this.matter.add
+      .image(940, 800, "plank", null, { isStatic: true })
+      .setScale(0.2);
+    this.matter.add
+      .image(1150, 765, "backpack", null, { isStatic: true })
+      .setScale(0.1);
+    this.matter.add
+      .image(790, 600, "backpack", null, { isStatic: true })
+      .setScale(0.08);
+    this.matter.add
+      .image(550, 450, "backpack", null, { isStatic: true })
+      .setScale(0.08);
+    this.matter.add
+      .image(1400, 860, "backpack", null, { isStatic: true })
+      .setScale(0.1);
+    this.matter.add
+      .image(240, 440, "plank", null, { isStatic: true })
+      .setScale(0.17);
 
-    // Platforms
-    this.platforms.create(550, 868, 'backpack').setScale(0.1).refreshBody();
-    this.platforms.create(650, 860, 'backpack').setScale(0.08).refreshBody();
-    this.platforms.create(800, 800, 'plank').setScale(0.2).refreshBody();
-    this.platforms.create(870, 800, 'plank').setScale(0.2).refreshBody();
-    this.platforms.create(940, 800, 'plank').setScale(0.2).refreshBody();
-    this.platforms.create(1150, 765, 'backpack').setScale(0.1).refreshBody();
-    this.platforms.create(790, 600, 'backpack').setScale(0.08).refreshBody();
-    this.platforms.create(550, 450, 'backpack').setScale(0.08).refreshBody();
-    this.platforms.create(1400, 860, 'backpack').setScale(0.1).refreshBody();
-    this.platforms.create(240, 440, 'plank').setScale(0.17).refreshBody();
-    this.doors.create(240, 370, 'door').setScale(0.1).refreshBody();
-    this.physics.add.collider(player, this.platforms);
-    this.physics.add.overlap(player, this.doors, () => {this.scene.start("GermanLesson")});
+    // Door (sensor for scene transition)
+    const door = this.matter.add.image(240, 370, "door", null, {
+      isStatic: true,
+      isSensor: true,
+    });
+    door.setScale(0.1);
+
+    this.matter.world.on("collisionstart", (event) => {
+      for (const pair of event.pairs) {
+        const involvesPlayer =
+          pair.bodyA === player.body || pair.bodyB === player.body;
+        const involvesDoor =
+          pair.bodyA === door.body || pair.bodyB === door.body;
+        if (involvesPlayer && involvesDoor) {
+          this.scene.start("GermanLesson");
+        }
+      }
+    });
   }
 
   update(time, delta) {

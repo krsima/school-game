@@ -15,8 +15,7 @@ export class ITLesson extends Phaser.Scene {
 
   create() {
     // Settings
-    this.physics.world.TILE_BIAS = 32;
-    this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setZoom(1.3);
 
