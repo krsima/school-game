@@ -106,8 +106,12 @@ export function movement() {
 
   // Debug
   if (keyTab.isDown) {
-    tscene.scene.start("ITLesson");
+    tscene.scene.start("GermanLesson");
   }
+}
+
+export function die() {
+    tscene.scene.start("OutsideSchool");
 }
 
 function isOnGround() {

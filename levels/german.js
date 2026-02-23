@@ -1,4 +1,4 @@
-import { create as createPlayer, movement } from "../player.js";
+import { create as createPlayer, movement, die } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
@@ -32,6 +32,19 @@ export class GermanLesson extends Phaser.Scene {
 
     // World
 
+    this.teacherspeach = this.make.text({
+      x: 1000,
+      y: 500,
+      text: "A und D zum Bewegen\nLeertaste zum Springen",
+      style: {
+        fontSize: "24px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        align: "center", // 'left'|'center'|'right'|'justify'
+      },
+      add: true,
+    });
+
     // Chairs (dynamic Matter bodies)
     const chairPositions = [200, 400, 600, 900, 1100, 1400, 1600, 1800];
     this.chairs = chairPositions.map((x) => {
@@ -40,30 +53,69 @@ export class GermanLesson extends Phaser.Scene {
       return chair;
     });
 
-    this.keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
+    this.matter.world.on("collisionstart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB, collision } = pair;
+        if (bodyA.gameObject === this.player && this.chairs.includes(bodyB.gameObject) && bodyB.gameObject.body.velocity.y - bodyA.gameObject.body.velocity.y > 15) {
+          die();
+        }
+        if (bodyB.gameObject === this.player && this.chairs.includes(bodyA.gameObject) && bodyA.gameObject.body.velocity.y - bodyB.gameObject.body.velocity.y > 15) {
+          die();
+        }
+      });
+    });
+
+    // Timetable
+
+    this.time.addEvent({
+      delay: 1000, // ms
+      callback: () => {
+        if (Math.random() < 0.3 && !this.cur) {
+          this.throwChairs();
+        }
+        if (Math.random() < 0.2 && !this.cur) {
+          this.sitDown();
+        }
+      },
+      loop: true,
+    });
   }
 
   update(time, delta) {
     movement();
-    if (this.keyK.isDown && !this.prev) {
-      this.prev = true;
-      this.throwChairs();
-    }
   }
 
   throwChairs() {
     this.chairs.forEach((chair) => {
       if (Math.random() < 0.6) {
-        console.log("failed");
         return;
       }
+      this.cur = true;
       chair.setVelocity(0, Math.max(0.8, Math.random()) * -45);
       this.time.delayedCall(500, () => {
         chair.setVelocityX(
           Math.ceil(Math.random() * 33) * (Math.round(Math.random()) ? 1 : -1),
         );
-        this.prev = false;
+        this.cur = false;
       });
+    });
+  }
+
+  sitDown() {
+    this.cur = true;
+    this.teacherspeach.setText("HINSETZEN!!!");
+    this.time.delayedCall(3000, () => {
+      var shoulddie = true;
+      this.player.collisions.keys().forEach((obj) => {
+        if (this.chairs.includes(obj)) {
+          shoulddie = false;
+        }
+      });
+      if (shoulddie) {
+        die();
+      }
+      this.teacherspeach.setText("");
+      this.cur = false;
     });
   }
 }

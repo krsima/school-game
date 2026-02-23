@@ -35,22 +35,6 @@ export class OutsideSchool extends Phaser.Scene {
     this.make.text({
       x: 150,
       y: 700,
-      shadow: {
-        offsetX: 0,
-        offsetY: 0,
-        color: "#999999",
-        blur: 5,
-        stroke: true,
-        fill: true,
-      },
-      padding: {
-        left: 0,
-        right: 16,
-        top: 20,
-        bottom: 40,
-        //x: 32,    // 32px padding on the left/right
-        //y: 16     // 16px padding on the top/bottom
-      },
       text: "A und D zum Bewegen\nLeertaste zum Springen",
       style: {
         fontSize: "24px",
