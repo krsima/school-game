@@ -94,7 +94,7 @@ export class GermanLesson extends Phaser.Scene {
 
     // Timetable
 
-    let timer = 120;
+    let timer = 80;
 
     this.cur = false;
     this.time.addEvent({
