@@ -39,23 +39,18 @@ export class ITLesson extends Phaser.Scene {
 
       // Moving Platforms
       var movingPlank = this.matter.add
-      .image(466, 300, "plank")
+      .image(466, 600, "plank")
+      .setScale(0.2)
+      .setFixedRotation()
+      .setMass(1000)
       .setIgnoreGravity(true);
 
-      var tween = scene.tweens.add({
+      var tween = this.tweens.add({
         targets: movingPlank,
-        x: 1,
-        x: '-=1',
-        // x: { from: 0, to: 1 },
-        // x: { start: 0, to: 1 },  
-        // x: { start: value0, from: value1, to: value2 },  
-        // x: {
-        //      getActive: function (target, key, value, targetIndex, totalTargets, tween) { return newValue; },
-        //      getStart: function (target, key, value, targetIndex, totalTargets, tween) { return newValue; },
-        //      getEnd: function (target, key, value, targetIndex, totalTargets, tween) { return newValue; }
-        // },
+        x: [100, 300, 200, 600],
+        y: 600,
         ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 1000,
+        duration: 3000,
         repeat: -1,            // -1: infinity
         yoyo: true,
 

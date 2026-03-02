@@ -106,7 +106,7 @@ export function movement() {
 
   // Debug
   if (keyTab.isDown) {
-    tscene.scene.start("GermanLesson");
+    tscene.scene.start("ITLesson");
   }
 }
 
