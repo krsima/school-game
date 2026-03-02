@@ -17,7 +17,7 @@ export class GermanLesson extends Phaser.Scene {
   create() {
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom(1);
 
     //Background
