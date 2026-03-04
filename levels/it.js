@@ -15,10 +15,17 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("monitor", "assets/monitor.jpg");
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
+    //this.load.image("walker", "assets/walker.png");
   }
 
   create() {
       this.dead = false
+
+      // Enemy texture (placeholder)
+      this.textures.generate("enemyBox", {
+        data: ["2222","2222","2222","2222"],
+        pixelWidth: 8
+      });
 
       // Settings
       this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -32,9 +39,6 @@ export class ITLesson extends Phaser.Scene {
       this.cameras.main.setBackgroundColor("#ccccff");
 
       // Platforms (static Matter bodies)
-      this.matter.add
-      .image(460, 870, "monitor", null, { isStatic: true })
-      .setScale(0.08);
       this.matter.add
       .image(650, 480, "monitor", null, { isStatic: true })
       .setScale(0.09);
@@ -59,7 +63,7 @@ export class ITLesson extends Phaser.Scene {
 
       // Moving Platforms
       var movingPlank1 = this.matter.add
-      .image(550, 750, "plank")
+      .image(550, 500, "plank")
       .setScale(0.2)
       .setFixedRotation()
       .setMass(1000)
@@ -75,7 +79,7 @@ export class ITLesson extends Phaser.Scene {
       var tween = this.tweens.add({
         targets: movingPlank1,
         x: 550,
-        y: 500,
+        y: 750,
         ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
         duration: 3000,
         repeat: -1,            // -1: infinity
@@ -86,9 +90,9 @@ export class ITLesson extends Phaser.Scene {
         targets: movingPlank2,
         x: 1180,
         y: 300,
-        ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+        ease: 'Linear',
         duration: 4000,
-        repeat: -1,            // -1: infinity
+        repeat: -1,
         yoyo: true,
 
         // interpolation: null,
@@ -114,19 +118,65 @@ export class ITLesson extends Phaser.Scene {
 
       // Door (sensor for scene transition)
       const door = this.matter.add.image(1920, 475, "door", null, {
-      isStatic: true,
-      isSensor: true,
+        isStatic: true,
+        isSensor: true,
       });
       door.setScale(0.1);
-    }
+
+      // Enemy spawn
+      this.enemies = this.add.group();
+      spawnEnemy.call(this, 670, 400);
+
+      // Player death by enemy collision
+      this.matter.world.on("collisionstart", (event) => {
+        event.pairs.forEach(pair => {
+
+          const a = pair.bodyA.gameObject;
+          const b = pair.bodyB.gameObject;
+
+          if (!a || !b) return;
+
+          if (
+              (a === this.player && this.enemies.contains(b)) ||
+              (b === this.player && this.enemies.contains(a))
+          ) {
+              die();
+          }
+
+        });
+      });
+
+  }
 
   update(time, delta) {
       movement();
       
-      if (!this.dead && player.body.position.y > 900) {
+      // Player death by falling
+      if (!this.dead && player.body.position.y > 940) {
         this.dead = true;
         die()
       }
+
+      // Enemy despawn
+      this.enemies.getChildren().forEach(enemy => {
+        if (enemy.y > 940) {
+          enemy.destroy();
+        }
+      });
   }
 
 }
+
+// Spawn enemies
+function spawnEnemy(x, y) {
+  const enemy = this.matter.add.sprite(x, y, "enemyBox");
+
+  enemy.setVelocityX(-2);      // walks left
+  enemy.setFriction(0);
+  enemy.setFrictionAir(0);
+  enemy.setFrictionStatic(0);
+  enemy.setBounce(0.2);
+  enemy.setFixedRotation();
+
+  this.enemies.add(enemy);
+};
