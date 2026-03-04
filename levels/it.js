@@ -1,4 +1,4 @@
-import { create as createPlayer, movement } from "../player.js";
+import { create as createPlayer, movement, die, player } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
@@ -18,6 +18,8 @@ export class ITLesson extends Phaser.Scene {
   }
 
   create() {
+      this.dead = false
+
       // Settings
       this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
       this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
@@ -94,7 +96,10 @@ export class ITLesson extends Phaser.Scene {
 
       // Floor
       this.matter.add
-      .image(430, 965, "table", null, { isStatic: true })
+      .image(280, 965, "table", null, { isStatic: true })
+      .setScale(0.15);
+      this.matter.add
+      .image(380, 965, "table", null, { isStatic: true })
       .setScale(0.15);
       this.matter.add
       .image(900, 965, "table", null, { isStatic: true })
@@ -117,5 +122,11 @@ export class ITLesson extends Phaser.Scene {
 
   update(time, delta) {
       movement();
+      
+      if (!this.dead && player.body.position.y > 900) {
+        this.dead = true;
+        die()
+      }
   }
+
 }

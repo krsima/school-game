@@ -10,13 +10,16 @@ let keySpace;
 let keyD;
 let keyW;
 
+export { player };
+
 // Debug
 let keyTab;
 export function create(scene) {
   tscene = scene;
 
   // Player
-  player = scene.matter.add.sprite(200, 800, "player");
+  scene.player = scene.matter.add.sprite(200, 800, "player");
+  player = scene.player;
   player.collisions = new Map();
   player.setFixedRotation();
   player.setFriction(0.0);
