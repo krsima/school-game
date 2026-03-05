@@ -104,14 +104,17 @@ export class ITLesson extends Phaser.Scene {
       });
 
       // Floor
-      this.matter.add
-      .image(100, 965, "table", null, { isStatic: true })
+      this.matter.add.rectangle(200, 925, 400, 20, {        // physics body for spawn platform
+        isStatic: true
+      });
+      this.add
+      .image(100, 965, "table")
       .setScale(0.15)
-      this.matter.add
-      .image(200, 965, "table", null, { isStatic: true })
+      this.add
+      .image(200, 965, "table")
       .setScale(0.15);
-      this.matter.add
-      .image(300, 965, "table", null, { isStatic: true })
+      this.add
+      .image(300, 965, "table")
       .setScale(0.15);
       this.matter.add
       .image(850, 965, "table", null, { isStatic: true })
@@ -136,8 +139,10 @@ export class ITLesson extends Phaser.Scene {
       this.rockets = this.add.group();
 
       // Enemy spawns
-      spawnEnemy.call(this, 650, 400);
-      spawnRocket.call(this, 0, 400, 7);
+      this.time.delayedCall(3000, () => {
+        spawnEnemy.call(this, 650, 410);
+      });
+      spawnRocket.call(this, 0, 380, 7);
       spawnRocket.call(this, WORLD_WIDTH - 50, 250, -5);
 
       // Handle collisions
@@ -240,7 +245,7 @@ function spawnEnemy(x, y) {
   enemy.setFriction(0);
   enemy.setFrictionAir(0);
   enemy.setFrictionStatic(0);
-  enemy.setBounce(0);
+  enemy.setBounce(0.2);
   enemy.setFixedRotation();
 
   this.enemies.add(enemy);
