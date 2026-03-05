@@ -15,7 +15,6 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("monitor", "assets/monitor.jpg");
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
-    //this.load.image("walker", "assets/walker.png");
   }
 
   create() {
@@ -24,7 +23,13 @@ export class ITLesson extends Phaser.Scene {
       // Enemy texture (placeholder)
       this.textures.generate("enemyBox", {
         data: ["2222","2222","2222","2222"],
-        pixelWidth: 8
+        pixelWidth: 6
+      });
+
+      // Rocket texture (placeholder)
+      this.textures.generate("rocketBox", {
+        data: ["2222","2222","2222","2222"],
+        pixelWidth: 6
       });
 
       // Settings
@@ -40,7 +45,7 @@ export class ITLesson extends Phaser.Scene {
 
       // Platforms (static Matter bodies)
       this.matter.add
-      .image(650, 480, "monitor", null, { isStatic: true })
+      .image(600, 480, "monitor", null, { isStatic: true })
       .setScale(0.09);
       this.matter.add
       .image(1250, 313, "monitor", null, { isStatic: true })
@@ -63,7 +68,7 @@ export class ITLesson extends Phaser.Scene {
 
       // Moving Platforms
       var movingPlank1 = this.matter.add
-      .image(550, 500, "plank")
+      .image(500, 500, "plank")
       .setScale(0.2)
       .setFixedRotation()
       .setMass(1000)
@@ -78,12 +83,14 @@ export class ITLesson extends Phaser.Scene {
 
       var tween = this.tweens.add({
         targets: movingPlank1,
-        x: 550,
+        x: 500,
         y: 750,
         ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
         duration: 3000,
         repeat: -1,            // -1: infinity
         yoyo: true
+
+        // interpolation: null,
       })
 
       var tween = this.tweens.add({
@@ -94,19 +101,20 @@ export class ITLesson extends Phaser.Scene {
         duration: 4000,
         repeat: -1,
         yoyo: true,
-
-        // interpolation: null,
       });
 
       // Floor
       this.matter.add
-      .image(280, 965, "table", null, { isStatic: true })
+      .image(100, 965, "table", null, { isStatic: true })
+      .setScale(0.15)
+      this.matter.add
+      .image(200, 965, "table", null, { isStatic: true })
       .setScale(0.15);
       this.matter.add
-      .image(380, 965, "table", null, { isStatic: true })
+      .image(300, 965, "table", null, { isStatic: true })
       .setScale(0.15);
       this.matter.add
-      .image(900, 965, "table", null, { isStatic: true })
+      .image(850, 965, "table", null, { isStatic: true })
       .setScale(0.15);
       this.matter.add
       .image(1450, 965, "table", null, { isStatic: true })
@@ -123,46 +131,102 @@ export class ITLesson extends Phaser.Scene {
       });
       door.setScale(0.1);
 
-      // Enemy spawn
+      // Enemy groups
       this.enemies = this.add.group();
-      spawnEnemy.call(this, 670, 400);
+      this.rockets = this.add.group();
 
-      // Player death by enemy collision
+      // Enemy spawns
+      spawnEnemy.call(this, 650, 400);
+      spawnRocket.call(this, 0, 400, 7);
+      spawnRocket.call(this, WORLD_WIDTH - 50, 250, -5);
+
+      // Handle collisions
       this.matter.world.on("collisionstart", (event) => {
+
         event.pairs.forEach(pair => {
 
-          const a = pair.bodyA.gameObject;
-          const b = pair.bodyB.gameObject;
+          const objA = pair.bodyA.gameObject;
+          const objB = pair.bodyB.gameObject;
 
-          if (!a || !b) return;
+          if (!objA || !objB) return;
 
+          // Player touches enemy → death
           if (
-              (a === this.player && this.enemies.contains(b)) ||
-              (b === this.player && this.enemies.contains(a))
+              (objA === this.player && (this.enemies.contains(objB) || this.rockets.contains(objB))) ||
+              (objB === this.player && (this.enemies.contains(objA) || this.rockets.contains(objA)))
           ) {
+            if (!this.dead) {
+              this.dead = true;
               die();
+            }
+            return;
+          }
+
+          // Enemy hits a wall (static object) → turn around
+          const normal = pair.collision.normal;
+
+          if (objA && this.enemies.contains(objA) && pair.bodyB.isStatic) {
+            if (Math.abs(normal.x) > 0.5) {
+              objA.direction *= -1;
+            }
+          }
+
+          if (objB && this.enemies.contains(objB) && pair.bodyA.isStatic) {
+            if (Math.abs(normal.x) > 0.5) {
+              objB.direction *= -1;
+            }
           }
 
         });
+
       });
+
 
   }
 
   update(time, delta) {
-      movement();
-      
-      // Player death by falling
-      if (!this.dead && player.body.position.y > 940) {
-        this.dead = true;
-        die()
+
+    movement();
+
+    // Player falls off the map
+    if (!this.dead && this.player && this.player.body.position.y > 940) {
+      this.dead = true;
+      die();
+    }
+
+    // Enemy behaviour
+    this.enemies.getChildren().forEach(enemy => {
+
+      // Maintain constant horizontal movement
+      enemy.setVelocityX(2 * enemy.direction);
+
+      // Turn around only at the left wall
+      if (enemy.x <= 20) {
+        enemy.direction = 1;
       }
 
-      // Enemy despawn
-      this.enemies.getChildren().forEach(enemy => {
-        if (enemy.y > 940) {
-          enemy.destroy();
-        }
-      });
+      // Despawn if fallen
+      if (enemy.y > 940) {
+        enemy.destroy();
+      }
+
+    });
+
+    // Rocket movement
+    this.rockets.getChildren().forEach(rocket => {
+
+      // moving right
+      if (rocket.body.velocity.x > 0 && rocket.x > WORLD_WIDTH - 50) {
+        rocket.setPosition(50, rocket.y);
+      }
+
+      // moving left
+      if (rocket.body.velocity.x < 0 && rocket.x < 50) {
+        rocket.setPosition(WORLD_WIDTH - 50, rocket.y);
+      }
+
+    });
+
   }
 
 }
@@ -171,12 +235,28 @@ export class ITLesson extends Phaser.Scene {
 function spawnEnemy(x, y) {
   const enemy = this.matter.add.sprite(x, y, "enemyBox");
 
-  enemy.setVelocityX(-2);      // walks left
+  enemy.direction = -1;
+
   enemy.setFriction(0);
   enemy.setFrictionAir(0);
   enemy.setFrictionStatic(0);
-  enemy.setBounce(0.2);
+  enemy.setBounce(0);
   enemy.setFixedRotation();
 
   this.enemies.add(enemy);
-};
+}
+
+function spawnRocket(x, y, speed) {
+  const rocket = this.matter.add.sprite(x, y, "rocketBox");
+
+  rocket.setVelocityX(speed);
+  rocket.setIgnoreGravity(true);
+
+  rocket.setFriction(0);
+  rocket.setFrictionAir(0);
+  rocket.setFrictionStatic(0);
+  rocket.setBounce(0);
+  rocket.setFixedRotation();
+
+  this.rockets.add(rocket);
+}
