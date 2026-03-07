@@ -1,6 +1,6 @@
 import { create as createPlayer, movement, die, player } from "../player.js";
 
-const WORLD_WIDTH = 2000;
+const WORLD_WIDTH = 3000;
 const WORLD_HEIGHT = 1000;
 
 export class ITLesson extends Phaser.Scene {
@@ -12,25 +12,18 @@ export class ITLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("it-classroom", "assets/it-classroom.jpg");
+    this.load.image("walker", "assets/walker.png");
+    this.load.image("rocketL", "assets/rocketL.png");
+    this.load.image("rocketR", "assets/rocketR.png");
     this.load.image("monitor", "assets/monitor.jpg");
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
+    this.load.image("door", "assets/door.jpg");
   }
 
   create() {
+
       this.dead = false
-
-      // Enemy texture (placeholder)
-      this.textures.generate("enemyBox", {
-        data: ["2222","2222","2222","2222"],
-        pixelWidth: 6
-      });
-
-      // Rocket texture (placeholder)
-      this.textures.generate("rocketBox", {
-        data: ["2222","2222","2222","2222"],
-        pixelWidth: 6
-      });
 
       // Settings
       this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -49,22 +42,32 @@ export class ITLesson extends Phaser.Scene {
       .setScale(0.09);
       this.matter.add
       .image(1250, 313, "monitor", null, { isStatic: true })
-      .setScale(0.075);
-      this.matter.add
-      .image(1400, 600, "monitor", null, { isStatic: true })
       .setScale(0.08);
       this.matter.add
-      .image(1480, 600, "monitor", null, { isStatic: true })
+      .image(1330, 313, "monitor", null, { isStatic: true })
       .setScale(0.08);
       this.matter.add
-      .image(1560, 600, "monitor", null, { isStatic: true })
+      .image(1410, 313, "monitor", null, { isStatic: true })
       .setScale(0.08);
       this.matter.add
-      .image(1850, 550, "plank", null, { isStatic: true })
-      .setScale(0.2);
-      this.matter.add
-      .image(1920, 550, "plank", null, { isStatic: true })
-      .setScale(0.2);
+      .image(1490, 313, "monitor", null, { isStatic: true })
+      .setScale(0.08);
+
+      this.matter.add.rectangle(2120, 600, 720, 77, { isStatic: true });       // physics body for monitor platform
+      const monitorPositions1 = [1800, 1880, 1960, 2040, 2120, 2200, 2280, 2360, 2440];
+      this.monitors = monitorPositions1.map((x) => {
+        const monitor = this.add.image(x, 600, "monitor");
+        monitor.setScale(0.08);
+        return monitor;
+      });
+
+      this.matter.add.rectangle(2760, 440, 400, 77, { isStatic: true });       // physics body for door platform
+      const monitorPositions2 = [2600, 2680, 2760, 2840, 2920];
+      this.monitors = monitorPositions2.map((x) => {
+        const monitor = this.add.image(x, 440, "monitor");
+        monitor.setScale(0.08);
+        return monitor;
+      });
 
       // Moving Platforms
       var movingPlank1 = this.matter.add
@@ -104,9 +107,7 @@ export class ITLesson extends Phaser.Scene {
       });
 
       // Floor
-      this.matter.add.rectangle(200, 925, 400, 20, {        // physics body for spawn platform
-        isStatic: true
-      });
+      this.matter.add.rectangle(200, 925, 400, 20, { isStatic: true });       // physics body for spawn platform
       this.add
       .image(100, 965, "table")
       .setScale(0.15)
@@ -120,34 +121,41 @@ export class ITLesson extends Phaser.Scene {
       .image(850, 965, "table", null, { isStatic: true })
       .setScale(0.15);
       this.matter.add
-      .image(1450, 965, "table", null, { isStatic: true })
-      .setScale(0.15);
-      this.matter.add
-      .image(1550, 965, "table", null, { isStatic: true })
+      .image(1480, 965, "table", null, { isStatic: true })
       .setScale(0.15);
   
 
       // Door (sensor for scene transition)
-      const door = this.matter.add.image(1920, 475, "door", null, {
+      const door = this.matter.add.image(2870, 350, "door", null, {
         isStatic: true,
         isSensor: true,
       });
       door.setScale(0.1);
 
       // Enemy groups
-      this.enemies = this.add.group();
+      this.walkers = this.add.group();
       this.rockets = this.add.group();
 
-      // Enemy spawns
+      // Walker spawns
       this.time.delayedCall(3000, () => {
-        spawnEnemy.call(this, 650, 410);
+        spawnWalker.call(this, 650, 410, 33, 400);   // x, y, leftBound, rightBound, direction (optional, default left)
       });
-      spawnRocket.call(this, 0, 380, 7);
-      spawnRocket.call(this, WORLD_WIDTH - 50, 250, -5);
+      this.time.delayedCall(9000, () => {
+        spawnWalker.call(this, 2380, 575, 1775, 2465, -1);    // left
+      });
+      this.time.delayedCall(10000, () => {
+        spawnWalker.call(this, 2380, 575, 1775, 2465, 1);     // right
+      });
+      this.time.delayedCall(12500, () => {
+        spawnWalker.call(this, 2380, 575, 1775, 2465, 1);     // right
+      });
+
+      // Rocket spawns
+      spawnRocket.call(this, 0, 378, 8);
+      spawnRocket.call(this, WORLD_WIDTH - 50, 247, -6);
 
       // Handle collisions
       this.matter.world.on("collisionstart", (event) => {
-
         event.pairs.forEach(pair => {
 
           const objA = pair.bodyA.gameObject;
@@ -157,8 +165,8 @@ export class ITLesson extends Phaser.Scene {
 
           // Player touches enemy → death
           if (
-              (objA === this.player && (this.enemies.contains(objB) || this.rockets.contains(objB))) ||
-              (objB === this.player && (this.enemies.contains(objA) || this.rockets.contains(objA)))
+              (objA === this.player && (this.walkers.contains(objB) || this.rockets.contains(objB))) ||
+              (objB === this.player && (this.walkers.contains(objA) || this.rockets.contains(objA)))
           ) {
             if (!this.dead) {
               this.dead = true;
@@ -167,23 +175,28 @@ export class ITLesson extends Phaser.Scene {
             return;
           }
 
-          // Enemy hits a wall (static object) → turn around
+          // Walker hits a wall (static object) → turn around
           const normal = pair.collision.normal;
 
-          if (objA && this.enemies.contains(objA) && pair.bodyB.isStatic) {
+          if (objA && this.walkers.contains(objA) && pair.bodyB.isStatic) {
             if (Math.abs(normal.x) > 0.5) {
               objA.direction *= -1;
             }
           }
 
-          if (objB && this.enemies.contains(objB) && pair.bodyA.isStatic) {
+          if (objB && this.walkers.contains(objB) && pair.bodyA.isStatic) {
             if (Math.abs(normal.x) > 0.5) {
               objB.direction *= -1;
             }
           }
 
-        });
+          // Turn around if colliding with another walker
+          if (objA && objB && this.walkers.contains(objA) && this.walkers.contains(objB)) {
+            objA.direction *= -1;
+            objB.direction *= -1;
+          }
 
+        });
       });
 
 
@@ -199,20 +212,24 @@ export class ITLesson extends Phaser.Scene {
       die();
     }
 
-    // Enemy behaviour
-    this.enemies.getChildren().forEach(enemy => {
+    // Walker behaviour
+    this.walkers.getChildren().forEach(walker => {
 
-      // Maintain constant horizontal movement
-      enemy.setVelocityX(2 * enemy.direction);
-
-      // Turn around only at the left wall
-      if (enemy.x <= 20) {
-        enemy.direction = 1;
-      }
+      if (!walker.body) return;    // walker might have been destroyed in a previous iteration
+      
+      walker.setVelocityX(2 * walker.direction);    // Maintain constant horizontal movement
 
       // Despawn if fallen
-      if (enemy.y > 940) {
-        enemy.destroy();
+      if (walker.y > 940) {
+        walker.destroy(true);
+      }
+
+      // Turn around at boundaries
+      if (walker.body.velocity.x < 0 && walker.x <= walker.leftBound) {
+        walker.direction = 1;
+      }
+      if (walker.body.velocity.x > 0 && walker.x >= walker.rightBound) {
+        walker.direction = -1;
       }
 
     });
@@ -237,22 +254,29 @@ export class ITLesson extends Phaser.Scene {
 }
 
 // Spawn enemies
-function spawnEnemy(x, y) {
-  const enemy = this.matter.add.sprite(x, y, "enemyBox");
+function spawnWalker(x, y, leftBound, rightBound, direction = -1) {
 
-  enemy.direction = -1;
+  const walker = this.matter.add.sprite(x, y, "walker").setScale(0.45);
 
-  enemy.setFriction(0);
-  enemy.setFrictionAir(0);
-  enemy.setFrictionStatic(0);
-  enemy.setBounce(0.2);
-  enemy.setFixedRotation();
+  walker.direction = direction;
 
-  this.enemies.add(enemy);
+  walker.leftBound = leftBound
+  walker.rightBound = rightBound
+
+  walker.setFriction(0);
+  walker.setFrictionAir(0);
+  walker.setFrictionStatic(0);
+  walker.setBounce(0.2);
+  walker.setFixedRotation();
+
+  this.walkers.add(walker);
 }
 
 function spawnRocket(x, y, speed) {
-  const rocket = this.matter.add.sprite(x, y, "rocketBox");
+
+  const sprite = speed > 0 ? "rocketR" : "rocketL";
+
+  const rocket = this.matter.add.sprite(x, y, sprite).setScale(0.15);
 
   rocket.setVelocityX(speed);
   rocket.setIgnoreGravity(true);
