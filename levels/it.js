@@ -225,6 +225,7 @@ export class ITLesson extends Phaser.Scene {
         }
       });
     });
+    
   }
 
   update(time, delta) {
