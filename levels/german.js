@@ -137,7 +137,6 @@ export class GermanLesson extends Phaser.Scene {
           this.sitDown();
         }
 
-        console.log(this.clock);
         if (this.clock == null && Math.random() < 0.1) {
           this.clock = this.matter.add.image(
             Math.random() * WORLD_WIDTH,

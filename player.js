@@ -111,7 +111,7 @@ export function movement() {
 
   // Debug
   if (keyTab.isDown) {
-    tscene.scene.start("ITLesson");
+    tscene.scene.start("BusStop");
   }
 
   player.lastVelocity = player.body.velocity;

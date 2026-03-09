@@ -1,6 +1,7 @@
 import { GermanLesson } from "./levels/german.js";
 import { OutsideSchool } from "./levels/outside-school.js";
 import { ITLesson } from "./levels/it.js";
+import { BusStop } from "./levels/busstop.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -10,7 +11,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
-  scene: [OutsideSchool, GermanLesson, ITLesson],
+  scene: [OutsideSchool, GermanLesson, ITLesson, BusStop],
   physics: {
     default: "matter",
     matter: {
