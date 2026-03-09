@@ -20,7 +20,7 @@ export class OutsideSchool extends Phaser.Scene {
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
-    this.cameras.main.setZoom(window.innerWidth / 1920 * 1.3);
+    this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
 
     //Background
     this.add.image(1024, 500, "background");

@@ -44,7 +44,8 @@ export class GermanLesson extends Phaser.Scene {
         align: "center", // 'left'|'center'|'right'|'justify'
       },
       add: true,
-    });
+    })
+    .setOrigin(0.5, 0.5);
 
 
     this.teacherspeach = this.make.text({
@@ -58,7 +59,8 @@ export class GermanLesson extends Phaser.Scene {
         align: "center", // 'left'|'center'|'right'|'justify'
       },
       add: true,
-    });
+    })
+    .setOrigin(0.5, 0.5);
 
     // Chairs (dynamic Matter bodies)
     const chairPositions = [200, 400, 600, 900, 1100, 1400, 1600, 1800];
