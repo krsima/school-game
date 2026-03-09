@@ -3,6 +3,8 @@ import { GermanLesson } from "./levels/german.js";
 var player;
 let tscene;
 
+var lives = 3;
+
 var cursors;
 
 let keyA;
@@ -116,7 +118,13 @@ export function movement() {
 }
 
 export function die() {
+  if (lives > 0) {
+    lives--;
+    tscene.scene.start(player.checkpoint);
+  } else {
+    lives = 3;
     tscene.scene.start("OutsideSchool");
+  }
 }
 
 function isOnGround() {

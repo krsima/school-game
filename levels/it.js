@@ -135,7 +135,7 @@ export class ITLesson extends Phaser.Scene {
             .text({
               x: player.x,
               y: player.y - 100,
-              text: "You Win!",
+              text: "Gewonnen!",
               style: {
                 fontSize: "24px",
                 fontFamily: "Arial",
@@ -145,6 +145,11 @@ export class ITLesson extends Phaser.Scene {
               add: true,
             })
             .setOrigin(0.5, 0.5);
+
+          this.player.checkpoint = "OutsideSchool";
+          this.time.delayedCall(3000, () => {
+            this.scene.start("OutsideSchool");
+          });
         }
       }
     });
