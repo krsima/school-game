@@ -1,4 +1,4 @@
-import { create as createPlayer, movement } from "../player.js";
+import { create as createPlayer, die, movement } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
@@ -63,8 +63,8 @@ export class BusStop extends Phaser.Scene {
                   isStatic: true,
                 })
                 .setScale(0.5);
-              bus.instaKill = true;
-              console.log(bus)
+              bus.body.instaKill = true;
+              console.log(bus);
               this.tweens.add({
                 targets: bus,
                 x: fromRight ? -200 : 2200,
@@ -87,10 +87,9 @@ export class BusStop extends Phaser.Scene {
         let playerInvolved =
           bodyA === this.player.body || bodyB === this.player.body;
         console.log(bodyA, bodyB);
-        let instaDeathInvolved =
-          bodyA.instaKill || bodyB.instaKill;
+        let instaDeathInvolved = bodyA.instaKill || bodyB.instaKill;
         if (playerInvolved && instaDeathInvolved) {
-          this.player.die();
+          die();
         }
       });
     });

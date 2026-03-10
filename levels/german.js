@@ -29,7 +29,7 @@ export class GermanLesson extends Phaser.Scene {
     this.player = createPlayer(this);
     this.player.setPosition(1000, 500);
     this.player.checkpoint = "GermanLesson";
-    
+
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
     this.cameras.main.setBackgroundColor("#ccccff");
@@ -119,8 +119,7 @@ export class GermanLesson extends Phaser.Scene {
       delay: 1000, // ms
       callback: () => {
         this.timerText.setText(
-          "Überlebe\n" + 
-          new Date(timer * 1000).toISOString().slice(14, 19),
+          "Überlebe\n" + new Date(timer * 1000).toISOString().slice(14, 19),
         );
         timer--;
         if (timer < 0) {
@@ -168,15 +167,18 @@ export class GermanLesson extends Phaser.Scene {
 
   throwChairs() {
     this.chairs.forEach((chair) => {
-      if (Math.random() < 0.6) {
+      if (Math.random() < 0.4 || chair.body.velocity.y != 0) {
         return;
       }
-      var left = false;
-      var timer = this.time.addEvent({
+      var remaining = 40;
+      this.time.addEvent({
         delay: 20, // ms
         callback: () => {
-          chair.setVelocity(left ? -10 : 10, 0);
-          left = !left;
+          chair.setVelocity(remaining % 2 == 0 ? -10 : 10, 0);
+          remaining -= 1;
+          if (remaining < 0) {
+            chair.setVelocity(0, 0);
+          }
         },
         callbackScope: this,
         repeat: 40,
