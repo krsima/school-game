@@ -21,6 +21,7 @@ export class SportsLesson extends Phaser.Scene {
   create() {
 
     this.dead = false;
+    this.keysCollected = 0;
 
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -34,30 +35,41 @@ export class SportsLesson extends Phaser.Scene {
     this.player.setPosition(50, 500);
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-
     this.cameras.main.setBackgroundColor("#ccccff");
 
     // World
-    
+    this.make.text({
+      x: 100,
+      y: 740,
+      text: "Sammle die zwei Schlüssel ein um die Tür zu öffnen",
+      style: {
+        fontSize: "24px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        align: "center", // 'left'|'center'|'right'|'justify'
+      },
+      add: true,
+    });
+
 
     // Platforms (static Matter bodies)
-    this.matter.add
-      .image(400, 1000, "table", null, { isStatic: true })
-      .setScale(0.15);
+
 
     // Door (sensor for scene transition)
-    const door = this.matter.add.image(2870, 350, "door", null, {
+    const door = this.matter.add.image(400, 950, "door", null, {
       isStatic: true,
       isSensor: true,
     });
     door.setScale(0.1);
+
     this.matter.world.on("collisionstart", (event) => {
       for (const pair of event.pairs) {
+
         const involvesPlayer =
           pair.bodyA === player.body || pair.bodyB === player.body;
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
-        if (involvesPlayer && involvesDoor) {
+        if (involvesPlayer && involvesDoor && this.doorUnlocked) {
           this.teacherspeach = this.make
             .text({
               x: player.x,
@@ -67,7 +79,7 @@ export class SportsLesson extends Phaser.Scene {
                 fontSize: "24px",
                 fontFamily: "Arial",
                 color: "#ffffff",
-                align: "center", // 'left'|'center'|'right'|'justify'
+                align: "center",  // 'left'|'center'|'right'|'justify'
               },
               add: true,
             })
@@ -78,8 +90,27 @@ export class SportsLesson extends Phaser.Scene {
             this.scene.start("OutsideSchool");
           });
         }
+
       }
     });
+
+    // Keys and locks
+    this.keys = [];
+
+    const key1 = this.matter.add.image(300, 800, "key", null, {
+      isStatic: true,
+      isSensor: true
+    }).setScale(0.1);
+
+    const key2 = this.matter.add.image(500, 800, "key", null, {
+      isStatic: true,
+      isSensor: true
+    }).setScale(0.1);
+
+    this.keys.push(key1, key2);
+
+    this.lock = this.add.image(400, 950, "lock").setScale(0.08);
+
 
     // Enemy groups
     this.walkers = this.add.group();
@@ -93,6 +124,7 @@ export class SportsLesson extends Phaser.Scene {
       spawnWalker.call(this, 900, 1000, 800, WORLD_WIDTH - 30);
     });
 
+
     // Handle collisions
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
@@ -100,6 +132,14 @@ export class SportsLesson extends Phaser.Scene {
         const objB = pair.bodyB.gameObject;
 
         if (!objA || !objB) return;
+
+        // Player touches key
+        if (objA === this.player && this.keys.includes(objB)) {
+          collectKey.call(this, objB);
+        }
+        if (objB === this.player && this.keys.includes(objA)) {
+          collectKey.call(this, objA);
+        }
 
         // Player touches enemy → death
         if (
@@ -184,4 +224,17 @@ function spawnWalker(x, y, leftBound, rightBound, direction = -1) {
   walker.setFixedRotation();
 
   this.walkers.add(walker);
+}
+
+function collectKey(key) {
+
+  key.destroy();    // hide key
+  this.keysCollected++;
+
+  // remove lock when both keys collected
+  if (this.keysCollected >= 2) {
+    this.lock.destroy();
+    this.doorUnlocked = true;
+  }
+
 }
