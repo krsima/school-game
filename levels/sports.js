@@ -16,6 +16,7 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("key", "assets/key.png");
     this.load.image("lock", "assets/lock.png")
     this.load.image("door", "assets/door.jpg")
+    this.load.image("box", "assets/box.png");
   }
 
   create() {
@@ -53,6 +54,9 @@ export class SportsLesson extends Phaser.Scene {
 
 
     // Platforms (static Matter bodies)
+    this.matter.add
+      .image(1800, 850, "box", null, { isStatic: true })
+      .setScale(0.15);
 
 
     // Door (sensor for scene transition)
@@ -118,10 +122,13 @@ export class SportsLesson extends Phaser.Scene {
 
     // Walker spawns
     this.time.delayedCall(1000, () => {
-      spawnWalker.call(this, 900, 1000, 800, WORLD_WIDTH - 30);   // x, y, leftBound, rightBound, direction (optional, default left/-1)
+      spawnWalker.call(this, 1800, 1000, 800, WORLD_WIDTH - 30);   // x, y, leftBound, rightBound, direction (optional, default left/-1)
+    });
+    this.time.delayedCall(4000, () => {
+      spawnWalker.call(this, 2100, 1000, 800, WORLD_WIDTH - 30);
     });
     this.time.delayedCall(5000, () => {
-      spawnWalker.call(this, 900, 1000, 800, WORLD_WIDTH - 30);
+      spawnWalker.call(this, 2100, 1000, 800, WORLD_WIDTH - 30, 1); // right
     });
 
 
@@ -226,15 +233,59 @@ function spawnWalker(x, y, leftBound, rightBound, direction = -1) {
   this.walkers.add(walker);
 }
 
+// Collect keys and unlock door
 function collectKey(key) {
 
-  key.destroy();    // hide key
-  this.keysCollected++;
+  // safety: ignore if key already collected
+  if (!key || key._collected) return;
 
-  // remove lock when both keys collected
+  // mark collected so this function is idempotent
+  key._collected = true;
+
+  // 1) hide and deactivate the visual immediately
+  key.setVisible(false);
+  key.setActive(false);
+
+  // 2) prevent any further collisions right away
+  if (key.body) {
+    key.body.collisionFilter.mask = 0;        // set collision mask to 0 so it collides with nothing
+    key.body.collisionFilter.category = 0;    // optionally also set category to 0
+    key.body.isSensor = true;                 // ensure it's a sensor (no blocking)
+  }
+
+  // 3) remove from your keys array so checks like this.keys.includes() won't find it
+  if (Array.isArray(this.keys)) {
+    this.keys = this.keys.filter(k => k !== key);
+  } else if (this.keys && typeof this.keys.remove === 'function') {
+    // if keys was a Group
+    this.keys.remove(key, true, true);
+  }
+
+  // 4) increment counter and handle unlocking
+  this.keysCollected = (this.keysCollected || 0) + 1;
+
   if (this.keysCollected >= 2) {
-    this.lock.destroy();
+    // hide lock graphic
+    if (this.lock) {
+      this.lock.setVisible(false);
+      this.lock.setActive(false);
+    }
     this.doorUnlocked = true;
+  }
+
+  // 5) remove physics body from world AFTER the current step to avoid messing with current collision processing
+  //    schedule a delayedCall with 0 ms which runs on next tick / after current event loop
+  if (key.body) {
+    this.time.delayedCall(0, () => {
+      try {
+        if (key.body && this.matter.world && this.matter.world.engine) {
+          // remove the body safely
+          this.matter.world.remove(key.body);
+        }
+      } catch (e) {
+        // ignore removal errors
+      }
+    });
   }
 
 }
