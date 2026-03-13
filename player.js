@@ -32,6 +32,8 @@ export function create(scene) {
     event.pairs.forEach((pair) => {
       const { bodyA, bodyB, collision } = pair;
 
+      if (pair.bodyA.isSensor || pair.bodyB.isSensor) return;
+
       if (bodyA.gameObject === player) {
         player.collisions.set(bodyB.gameObject, collision.normal);
       } else if (bodyB.gameObject === player) {
