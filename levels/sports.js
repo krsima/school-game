@@ -29,7 +29,7 @@ export class SportsLesson extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
 
-    //Background
+    // Background
     this.add.image(1150, 500, "sports-hall").setScale(1.4);
 
     this.player = createPlayer(this);
@@ -55,12 +55,26 @@ export class SportsLesson extends Phaser.Scene {
 
     // Platforms (static Matter bodies)
     this.matter.add
-      .image(1800, 850, "box", null, { isStatic: true })
+      .image(1800, 740, "box", null, { isStatic: true })
+      .setScale(0.15);
+    
+
+    // Floor
+    this.matter.add.rectangle(200, 925, 400, 20, { isStatic: true });   // physics body for spawn platform
+    this.add.image(100, 965, "table").setScale(0.15);
+    this.add.image(200, 965, "table").setScale(0.15);
+    this.add.image(300, 965, "table").setScale(0.15);
+
+    this.matter.add
+      .image(900, 965, "table", null, { isStatic: true })
       .setScale(0.15);
 
+    this.matter.add.rectangle(1530, 925, 400, 20, { isStatic: true });   // physics body for platform
+    this.add.image(1480, 965, "table").setScale(0.15);    // visual for platform
+    this.add.image(1580, 965, "table").setScale(0.15);
 
     // Door (sensor for scene transition)
-    const door = this.matter.add.image(400, 950, "door", null, {
+    const door = this.matter.add.image(300, 860, "door", null, {
       isStatic: true,
       isSensor: true,
     });
@@ -101,19 +115,19 @@ export class SportsLesson extends Phaser.Scene {
     // Keys and locks
     this.keys = [];
 
-    const key1 = this.matter.add.image(300, 800, "key", null, {
+    const key1 = this.matter.add.image(300, 710, "key", null, {
       isStatic: true,
       isSensor: true
     }).setScale(0.1);
 
-    const key2 = this.matter.add.image(500, 800, "key", null, {
+    const key2 = this.matter.add.image(500, 710, "key", null, {
       isStatic: true,
       isSensor: true
     }).setScale(0.1);
 
     this.keys.push(key1, key2);
 
-    this.lock = this.add.image(400, 950, "lock").setScale(0.08);
+    this.lock = this.add.image(300, 860, "lock").setScale(0.08);
 
 
     // Enemy groups
@@ -122,13 +136,10 @@ export class SportsLesson extends Phaser.Scene {
 
     // Walker spawns
     this.time.delayedCall(1000, () => {
-      spawnWalker.call(this, 1800, 1000, 800, WORLD_WIDTH - 30);   // x, y, leftBound, rightBound, direction (optional, default left/-1)
+      spawnWalker.call(this, 200, 880, 33, 400);   // x, y, leftBound, rightBound, direction (optional, default left/-1)
     });
     this.time.delayedCall(4000, () => {
-      spawnWalker.call(this, 2100, 1000, 800, WORLD_WIDTH - 30);
-    });
-    this.time.delayedCall(5000, () => {
-      spawnWalker.call(this, 2100, 1000, 800, WORLD_WIDTH - 30, 1); // right
+      spawnWalker.call(this, 1600, 880, 1395, 1675);
     });
 
 
@@ -196,11 +207,22 @@ export class SportsLesson extends Phaser.Scene {
 
     movement();
 
+    // Player falls off the map
+    if (!this.dead && this.player && this.player.body.position.y > 940) {
+      this.dead = true;
+      die();
+    }
+
     // Walker behaviour
     this.walkers.getChildren().forEach((walker) => {
       if (!walker.body) return; // walker might have been destroyed in a previous iteration
 
       walker.setVelocityX(2 * walker.direction); // Maintain constant horizontal movement
+
+      // Despawn if fallen
+      if (walker.y > 940) {
+        walker.destroy(true);
+      }
 
       // Turn around at boundaries
       if (walker.body.velocity.x < 0 && walker.x <= walker.leftBound) {
