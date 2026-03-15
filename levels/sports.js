@@ -63,11 +63,11 @@ export class SportsLesson extends Phaser.Scene {
     this.matter.add
       .image(1800, 740, "box", null, { isStatic: true })
       .setScale(0.12);
-    this.add
-      .image(650, 400, "box")
+    this.matter.add
+      .image(650, 400, "box", null, { isStatic: true })
       .setScale(0.12)
 
-    this.matter.add.rectangle(200, 400, 150, 70, { isStatic: true });   // physics body for box platform (x, y, width, height)
+    this.matter.add.rectangle(200, 400, 320, 70, { isStatic: true });   // physics body for box platform (x, y, width, height)
 
     const boxPositions1 = [
       50, 150, 250, 350
@@ -179,7 +179,7 @@ export class SportsLesson extends Phaser.Scene {
       isSensor: true
     }).setScale(0.1);
 
-    const key2 = this.matter.add.image(50, 250, "key", null, {
+    const key2 = this.matter.add.image(50, 150, "key", null, {
       isStatic: true,
       isSensor: true
     }).setScale(0.1);
@@ -199,6 +199,9 @@ export class SportsLesson extends Phaser.Scene {
     });
     this.time.delayedCall(4000, () => {
       spawnWalker.call(this, 1600, 880, 1395, 1675);
+    });
+    this.time.delayedCall(1000, () => {
+      spawnWalker.call(this, 200, 350, 33, 380);
     });
 
 
