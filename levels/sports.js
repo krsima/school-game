@@ -14,15 +14,18 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("walker", "assets/walker.png");
     this.load.image("table", "assets/table.png");
     this.load.image("key", "assets/key.png");
-    this.load.image("lock", "assets/lock.png")
-    this.load.image("door", "assets/door.jpg")
+    this.load.image("lock", "assets/lock.png");
+    this.load.image("door", "assets/door.jpg");
     this.load.image("box", "assets/box.png");
+    this.load.image("plank", "assets/plank.png");
   }
 
   create() {
 
+    // State variables
     this.dead = false;
     this.keysCollected = 0;
+    this.doorUnlocked = false;
 
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -32,8 +35,11 @@ export class SportsLesson extends Phaser.Scene {
     // Background
     this.add.image(1150, 500, "sports-hall").setScale(1.4);
 
+    // Player & Cams
     this.player = createPlayer(this);
-    this.player.setPosition(50, 500);
+    this.player
+      .setPosition(50, 500)
+      .setDepth(10);    // rendering order
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
@@ -50,13 +56,65 @@ export class SportsLesson extends Phaser.Scene {
         align: "center", // 'left'|'center'|'right'|'justify'
       },
       add: true,
-    });
+    }).setDepth(15);
 
 
     // Platforms (static Matter bodies)
     this.matter.add
       .image(1800, 740, "box", null, { isStatic: true })
-      .setScale(0.15);
+      .setScale(0.12);
+    this.add
+      .image(650, 400, "box")
+      .setScale(0.12)
+
+    this.matter.add.rectangle(200, 400, 150, 70, { isStatic: true });   // physics body for box platform (x, y, width, height)
+
+    const boxPositions1 = [
+      50, 150, 250, 350
+    ];
+    this.boxes = boxPositions1.map((x) => {
+      const box = this.add.image(x, 400, "backpack");    // visual for box platform
+      box.setScale(0.08);
+      return box;
+    });
+
+
+    // Moving Platforms
+    var movingPlank1 = this.matter.add
+      .image(1500, 550, "plank")
+      .setScale(0.2)
+      .setFixedRotation()
+      .setMass(1000)
+      .setIgnoreGravity(true);
+
+    this.tweens.add({
+      targets: movingPlank1,
+      x: 900,
+      y: 450,
+      ease: "Linear",   // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 3000,
+      repeat: -1,   // -1: infinity
+      yoyo: true,
+
+      // interpolation: null,
+    });
+
+    var movingPlank2 = this.matter.add
+      .image(2200, 650, "plank")
+      .setScale(0.2)
+      .setFixedRotation()
+      .setMass(1000)
+      .setIgnoreGravity(true);
+
+    this.tweens.add({
+      targets: movingPlank2,
+      x: 2200,
+      y: 150,
+      ease: "Linear",
+      duration: 3000,
+      repeat: -1,
+      yoyo: true,
+    });
     
 
     // Floor
@@ -74,24 +132,24 @@ export class SportsLesson extends Phaser.Scene {
     this.add.image(1580, 965, "table").setScale(0.15);
 
     // Door (sensor for scene transition)
-    const door = this.matter.add.image(300, 860, "door", null, {
+    const door = this.matter.add.image(300, 865, "door", null, {
       isStatic: true,
       isSensor: true,
     });
-    door.setScale(0.1);
+    door.setScale(0.1).setDepth(5);
 
     this.matter.world.on("collisionstart", (event) => {
       for (const pair of event.pairs) {
 
         const involvesPlayer =
-          pair.bodyA === player.body || pair.bodyB === player.body;
+          pair.bodyA === this.player.body || pair.bodyB === this.player.body;
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor && this.doorUnlocked) {
           this.teacherspeach = this.make
             .text({
-              x: player.x,
-              y: player.y - 100,
+              x: this.player.x,
+              y: this.player.y - 100,
               text: "Gewonnen!",
               style: {
                 fontSize: "24px",
@@ -112,22 +170,23 @@ export class SportsLesson extends Phaser.Scene {
       }
     });
 
+
     // Keys and locks
     this.keys = [];
 
-    const key1 = this.matter.add.image(300, 710, "key", null, {
+    const key1 = this.matter.add.image(1800, 200, "key", null, {
       isStatic: true,
       isSensor: true
     }).setScale(0.1);
 
-    const key2 = this.matter.add.image(500, 710, "key", null, {
+    const key2 = this.matter.add.image(50, 250, "key", null, {
       isStatic: true,
       isSensor: true
     }).setScale(0.1);
 
     this.keys.push(key1, key2);
 
-    this.lock = this.add.image(300, 860, "lock").setScale(0.08);
+    this.lock = this.add.image(300, 865, "lock").setScale(0.08).setDepth(6);
 
 
     // Enemy groups
