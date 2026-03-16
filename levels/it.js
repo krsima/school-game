@@ -148,7 +148,7 @@ export class ITLesson extends Phaser.Scene {
 
           this.player.checkpoint = "OutsideSchool";
           this.time.delayedCall(3000, () => {
-            this.scene.start("OutsideSchool");
+            this.scene.start("SportsLesson");
           });
         }
       }
