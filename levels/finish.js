@@ -2,7 +2,7 @@ import { create as createPlayer, movement } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
-const API_URL = "https://native-destination-witch-buzz.trycloudflare.com/";
+const API_URL = "https://https-proxy.tamion.workers.dev/";
 
 export class Finish extends Phaser.Scene {
   constructor(...args) {
