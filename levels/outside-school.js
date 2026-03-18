@@ -13,7 +13,7 @@ export class OutsideSchool extends Phaser.Scene {
     this.load.image("background", "assets/outside.jpg");
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
-    this.load.image("door", "assets/door.jpg");
+    this.load.image("door", "assets/door.png");
   }
 
   create() {

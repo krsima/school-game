@@ -17,7 +17,7 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("monitor", "assets/monitor.jpg");
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
-    this.load.image("door", "assets/door.jpg");
+    this.load.image("door", "assets/door.png");
   }
 
   create() {
