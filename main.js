@@ -14,7 +14,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
-  scene: [HUD, OutsideSchool, GermanLesson, ITLesson, SportsLesson, BusStop, Finish],
+  scene: [OutsideSchool, GermanLesson, ITLesson, SportsLesson, BusStop, Finish, HUD],
   physics: {
     default: "matter",
     matter: {
