@@ -2,6 +2,7 @@ import { create as createPlayer, movement } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
+const API_URL = "http://tamion.freemyip.com:8000";
 
 export class Finish extends Phaser.Scene {
   constructor(...args) {
@@ -30,10 +31,10 @@ export class Finish extends Phaser.Scene {
     this.cameras.main.setBackgroundColor("#ccccff");
 
     // World
-    this.make.text({
+    this.text = this.make.text({
       x: 150,
       y: 700,
-      text: "A und D zum Bewegen\nLeertaste zum Springen",
+      text: "Leaderboard loading...",
       style: {
         fontSize: "24px",
         fontFamily: "Arial",
@@ -43,59 +44,67 @@ export class Finish extends Phaser.Scene {
       add: true,
     });
 
-    // Platforms (static Matter bodies)
-    this.matter.add
-      .image(550, 868, "backpack", null, { isStatic: true })
-      .setScale(0.1);
-    this.matter.add
-      .image(650, 860, "backpack", null, { isStatic: true })
-      .setScale(0.08);
-    this.matter.add
-      .image(800, 800, "plank", null, { isStatic: true })
-      .setScale(0.2);
-    this.matter.add
-      .image(870, 800, "plank", null, { isStatic: true })
-      .setScale(0.2);
-    this.matter.add
-      .image(940, 800, "plank", null, { isStatic: true })
-      .setScale(0.2);
-    this.matter.add
-      .image(1150, 765, "backpack", null, { isStatic: true })
-      .setScale(0.1);
-    this.matter.add
-      .image(790, 600, "backpack", null, { isStatic: true })
-      .setScale(0.08);
-    this.matter.add
-      .image(550, 450, "backpack", null, { isStatic: true })
-      .setScale(0.08);
-    this.matter.add
-      .image(1400, 860, "backpack", null, { isStatic: true })
-      .setScale(0.1);
-    this.matter.add
-      .image(240, 440, "plank", null, { isStatic: true })
-      .setScale(0.17);
-
-    // Door (sensor for scene transition)
-    const door = this.matter.add.image(240, 370, "door", null, {
-      isStatic: true,
-      isSensor: true,
+    this.time.delayedCall(2000, () => {
+      const top10 = this.getTop10();
     });
-    door.setScale(0.1);
 
-    this.matter.world.on("collisionstart", (event) => {
-      for (const pair of event.pairs) {
-        const involvesPlayer =
-          pair.bodyA === player.body || pair.bodyB === player.body;
-        const involvesDoor =
-          pair.bodyA === door.body || pair.bodyB === door.body;
-        if (involvesPlayer && involvesDoor) {
-          this.scene.start("GermanLesson");
-        }
-      }
+    this.time.delayedCall(100, () => {
+      var playerName = prompt(
+        "Welcher Name soll auf dem Leaderboard erscheinen?",
+      );
+      this.submitScore(playerName, Date.now() - this.registry.get("timeStart"));
     });
   }
 
   update(time, delta) {
     movement();
   }
+
+  async getTop10() {
+    const res = await fetch(`${API_URL}/top`);
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch leaderboard");
+    }
+
+    const data = await res.json();
+    this.text.text = formatLeaderboard(data);
+  }
+
+  async submitScore(name, time) {
+    if (!name || typeof time !== "number") {
+      throw new Error("Invalid name or time");
+    }
+
+    const res = await fetch(`${API_URL}/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, time }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to submit score");
+    }
+
+    return true;
+  }
+}
+
+function formatLeaderboard(leaderboard) {
+  console.log(leaderboard, typeof leaderboard);
+  return leaderboard
+    .map((entry, index) => {
+      return `${index + 1}. ${entry.name} (${formatTime(entry.time)})`;
+    })
+    .join("\n");
+}
+
+function formatTime(ms) {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  const milliseconds = ms % 1000;
+
+  return `${minutes}:${seconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
 }

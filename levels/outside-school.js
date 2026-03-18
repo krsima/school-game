@@ -17,6 +17,8 @@ export class OutsideSchool extends Phaser.Scene {
   }
 
   create() {
+    this.registry.set("timeStart", Date.now());
+
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
@@ -25,7 +27,7 @@ export class OutsideSchool extends Phaser.Scene {
     //Background
     this.add.image(1024, 500, "background");
     var player = createPlayer(this);
-    player.checkpoint = "GermanLesson";
+    player.checkpoint = "OutsideSchool";
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 
