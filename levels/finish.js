@@ -3,9 +3,9 @@ import { create as createPlayer, movement } from "../player.js";
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
 
-export class OutsideSchool extends Phaser.Scene {
+export class Finish extends Phaser.Scene {
   constructor(...args) {
-    super({ key: "OutsideSchool", ...args });
+    super({ key: "Finish", ...args });
   }
 
   preload() {
@@ -25,7 +25,7 @@ export class OutsideSchool extends Phaser.Scene {
     //Background
     this.add.image(1024, 500, "background");
     var player = createPlayer(this);
-    player.checkpoint = "GermanLesson";
+    player.checkpoint = "Finish";
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 

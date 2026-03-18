@@ -17,7 +17,7 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("monitor", "assets/monitor.jpg");
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
-    this.load.image("door", "assets/door.jpg");
+    this.load.image("door", "assets/door.png");
   }
 
   create() {
@@ -131,25 +131,7 @@ export class ITLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
-          this.teacherspeach = this.make
-            .text({
-              x: player.x,
-              y: player.y - 100,
-              text: "Gewonnen!",
-              style: {
-                fontSize: "24px",
-                fontFamily: "Arial",
-                color: "#ffffff",
-                align: "center", // 'left'|'center'|'right'|'justify'
-              },
-              add: true,
-            })
-            .setOrigin(0.5, 0.5);
-
-          this.player.checkpoint = "OutsideSchool";
-          this.time.delayedCall(3000, () => {
-            this.scene.start("SportsLesson");
-          });
+          this.scene.start("SportsLesson");
         }
       }
     });
@@ -225,7 +207,6 @@ export class ITLesson extends Phaser.Scene {
         }
       });
     });
-    
   }
 
   update(time, delta) {

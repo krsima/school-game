@@ -12,7 +12,7 @@ export class GermanLesson extends Phaser.Scene {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("classroom", "assets/classroom.png");
     this.load.image("teacher", "assets/teacher.jpg");
-    this.load.image("chair", "assets/chair.jpg");
+    this.load.image("chair", "assets/chair.png");
     this.load.image("clock", "assets/clock.jpg");
   }
 
@@ -129,10 +129,10 @@ export class GermanLesson extends Phaser.Scene {
             this.scene.start("ITLesson");
           });
         }
-        if (Math.random() < 0.3 && !this.cur) {
+        if (Math.random() < 0.3 && !this.curThrowing) {
           this.throwChairs();
         }
-        if (Math.random() < 0.2 && !this.cur) {
+        if (Math.random() < 0.2 && !this.curSitting) {
           this.sitDown();
         }
 
@@ -166,8 +166,14 @@ export class GermanLesson extends Phaser.Scene {
   }
 
   throwChairs() {
+    console.log(this.player.collisions.keys());
     this.chairs.forEach((chair) => {
-      if (Math.random() < 0.4 || chair.body.velocity.y != 0) {
+      if (
+        Math.random() < 0.4 ||
+        chair.body.velocity.y != 0 ||
+        (this.curSitting &&
+          this.player.collisions.keys().some((v) => v === chair))
+      ) {
         return;
       }
       var remaining = 40;
@@ -183,7 +189,7 @@ export class GermanLesson extends Phaser.Scene {
         callbackScope: this,
         repeat: 40,
       });
-      this.cur = true;
+      this.curThrowing = true;
       this.time.delayedCall(1000, () => {
         chair.setVelocity(0, Math.max(0.8, Math.random()) * -45);
       });
@@ -191,13 +197,13 @@ export class GermanLesson extends Phaser.Scene {
         chair.setVelocityX(
           Math.ceil(Math.random() * 33) * (Math.round(Math.random()) ? 1 : -1),
         );
-        this.cur = false;
+        this.curThrowing = false;
       });
     });
   }
 
   sitDown() {
-    this.cur = true;
+    this.curSitting = true;
     this.teacherspeach.setText("HINSETZEN!!!");
     this.time.delayedCall(3000, () => {
       var shoulddie = true;
@@ -210,7 +216,7 @@ export class GermanLesson extends Phaser.Scene {
         die();
       }
       this.teacherspeach.setText("");
-      this.cur = false;
+      this.curSitting = false;
     });
   }
 }

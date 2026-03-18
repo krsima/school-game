@@ -15,7 +15,7 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("table", "assets/table.png");
     this.load.image("key", "assets/key.png");
     this.load.image("lock", "assets/lock.png");
-    this.load.image("door", "assets/door.jpg");
+    this.load.image("door", "assets/door.png");
     this.load.image("box", "assets/box.png");
     this.load.image("plank", "assets/plank.png");
   }
