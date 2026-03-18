@@ -2,8 +2,7 @@ import { create as createPlayer, movement } from "../player.js";
 
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 1000;
-const API_URL =
-  "https://stroke-electricity-podcast-poor.trycloudflare.com:8000/";
+const API_URL = "https://native-destination-witch-buzz.trycloudflare.com/";
 
 export class Finish extends Phaser.Scene {
   constructor(...args) {
