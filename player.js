@@ -113,7 +113,7 @@ export function movement() {
 
   // Debug
   if (keyTab.isDown) {
-    tscene.scene.start("BusStop");
+    tscene.scene.start("Finish");
   }
 
   player.lastVelocity = player.body.velocity;
@@ -131,7 +131,10 @@ export function die() {
 
 function isOnGround() {
   for (const normal of player.collisions.values()) {
-    if (normal.y < -0.5 || (player.body.velocity.y === 0 && player.lastVelocity.y === 0)) {
+    if (
+      normal.y < -0.5 ||
+      (player.body.velocity.y === 0 && player.lastVelocity.y === 0)
+    ) {
       return true;
     }
   }

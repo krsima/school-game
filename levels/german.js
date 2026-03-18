@@ -105,6 +105,10 @@ export class GermanLesson extends Phaser.Scene {
             this.matter.world.remove(this.clock.body);
             this.clock.destroy();
             this.clock = null;
+            this.clockTimer.remove();
+            this.time.delayedCall(3000, () => {
+              this.createClock();
+            });
           }
         }
       });
@@ -112,7 +116,7 @@ export class GermanLesson extends Phaser.Scene {
 
     // Timetable
 
-    let timer = 120;
+    let timer = 180;
 
     this.cur = false;
     this.time.addEvent({
@@ -129,32 +133,11 @@ export class GermanLesson extends Phaser.Scene {
             this.scene.start("ITLesson");
           });
         }
-        if (Math.random() < 0.3 && !this.curThrowing) {
+        if (Math.random() < 0.4 && !this.curThrowing) {
           this.throwChairs();
         }
         if (Math.random() < 0.2 && !this.curSitting) {
           this.sitDown();
-        }
-
-        if (this.clock == null && Math.random() < 0.1) {
-          this.clock = this.matter.add.image(
-            Math.random() * WORLD_WIDTH,
-            700,
-            "clock",
-            null,
-            {
-              isStatic: true,
-              isSensor: true,
-            },
-          );
-          this.clock.setScale(0.1);
-          this.time.delayedCall(5000, () => {
-            if (this.clock != null) {
-              this.matter.world.remove(this.clock.body);
-              this.clock.destroy();
-              this.clock = null;
-            }
-          });
         }
       },
       loop: true,
@@ -164,10 +147,36 @@ export class GermanLesson extends Phaser.Scene {
     if (!this.scene.isActive("HUD")) {
       this.scene.launch("HUD");
     }
+    
+    this.createClock();
   }
 
   update(time, delta) {
     movement();
+  }
+
+  createClock() {
+    this.clock = this.matter.add.image(
+      Math.random() * WORLD_WIDTH,
+      700,
+      "clock",
+      null,
+      {
+        isStatic: true,
+        isSensor: true,
+      },
+    );
+    this.clock.setScale(0.1);
+    this.clockTimer = this.time.delayedCall(5000, () => {
+      if (this.clock != null) {
+        this.matter.world.remove(this.clock.body);
+        this.clock.destroy();
+        this.clock = null;
+        this.time.delayedCall(3000, () => {
+          this.createClock();
+        });
+      }
+    });
   }
 
   throwChairs() {

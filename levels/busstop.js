@@ -250,7 +250,7 @@ export class BusStop extends Phaser.Scene {
             die();
           }
           if (winnerInvolved) {
-            this.scene.start("Win");
+            this.scene.start("Finish");
           }
         }
       });
