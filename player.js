@@ -137,3 +137,7 @@ function isOnGround() {
   }
   return false;
 }
+
+export function getLives() {
+  return lives;
+}

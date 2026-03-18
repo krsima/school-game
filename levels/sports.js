@@ -263,6 +263,10 @@ export class SportsLesson extends Phaser.Scene {
       });
     });
 
+    // Start Head-Up Display (HUD) scene
+    if (!this.scene.isActive("HUD")) {
+      this.scene.launch("HUD");
+    }
   }
 
   update(time, delta) {

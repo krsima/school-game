@@ -159,6 +159,11 @@ export class GermanLesson extends Phaser.Scene {
       },
       loop: true,
     });
+
+    // Start Head-Up Display (HUD) scene
+    if (!this.scene.isActive("HUD")) {
+      this.scene.launch("HUD");
+    }
   }
 
   update(time, delta) {
