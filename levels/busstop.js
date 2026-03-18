@@ -32,7 +32,7 @@ export class BusStop extends Phaser.Scene {
     this.cameras.main.setBackgroundColor("#ccccff");
 
     // World
-    this.make
+    this.text = this.make
       .text({
         x: 1000,
         y: 450,
@@ -48,6 +48,7 @@ export class BusStop extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     const studentCount = 15;
+    const vaperCount = 4;
     const scheduleStudentMove = (s) => {
       const wait = 500 + Math.random() * 3000;
       this.time.delayedCall(wait, () => {
@@ -57,10 +58,12 @@ export class BusStop extends Phaser.Scene {
           scheduleStudentMove(s);
         } else {
           const targetX = 300 + Math.random() * 1400;
+          const targetY = 1000 - Math.random() * 200;
           const dist = Math.abs(targetX - s.x);
           this.tweens.add({
             targets: s,
             x: targetX,
+            y: targetY,
             duration: (dist / 200) * 1000,
             ease: "Linear",
             onComplete: () => scheduleStudentMove(s),
@@ -80,11 +83,6 @@ export class BusStop extends Phaser.Scene {
     cloudGfx.destroy();
 
     // Vaper NPCs at fixed positions
-    this.vapers = [
-      this.add.image(420, 900, "vaper").setScale(0.3).setDepth(-1),
-      this.add.image(1480, 900, "vaper").setScale(0.3).setDepth(-1),
-      this.add.image(1080, 900, "vaper").setScale(0.3).setDepth(-1),
-    ];
     const scheduleVaperMove = (vaper) => {
       const wait = 500 + Math.random() * 3000;
       this.time.delayedCall(wait, () => {
@@ -96,11 +94,13 @@ export class BusStop extends Phaser.Scene {
         if (Math.random() < 0.4) {
           scheduleVaperMove(vaper);
         } else {
-          const targetX = 300 + Math.random() * 1400;
+          const targetX = 200 + Math.random() * 1600;
+          const targetY = 1000 - Math.random() * 200;
           const dist = Math.abs(targetX - vaper.x);
           vaper.moveTween = this.tweens.add({
             targets: vaper,
             x: targetX,
+            y: targetY,
             duration: (dist / 200) * 1000,
             ease: "Linear",
             onComplete: () => {
@@ -111,15 +111,25 @@ export class BusStop extends Phaser.Scene {
         }
       });
     };
-    this.vapers.forEach((vaper) => {
+    this.vapers = [];
+    for (let i = 0; i < vaperCount; i++) {
+      const vaper = this.add
+        .image(300 + Math.random() * 1400, 1000 - Math.random() * 200, "vaper")
+        .setScale(0.3)
+        .setDepth(-1);
+      this.vapers.push(vaper);
       vaper.isVaping = false;
       vaper.moveTween = null;
       scheduleVaperMove(vaper);
-    });
+    }
 
     for (let i = 0; i < studentCount; i++) {
       const s = this.add
-        .image(300 + Math.random() * 1400, 900, "student")
+        .image(
+          300 + Math.random() * 1400,
+          1000 - Math.random() * 200,
+          "student",
+        )
         .setScale(0.3)
         .setDepth(-1);
       scheduleStudentMove(s);
@@ -132,7 +142,7 @@ export class BusStop extends Phaser.Scene {
     this.time.addEvent({
       delay: 2000,
       callback: () => {
-        if (!this.vapeCur && Math.random() < 0.08) {
+        if (!this.vapeCur && Math.random() < 0.2) {
           this.vapeCur = true;
           const vaper = Phaser.Utils.Array.GetRandom(this.vapers);
           vaper.isVaping = true;
@@ -140,15 +150,16 @@ export class BusStop extends Phaser.Scene {
             vaper.moveTween.stop();
             vaper.moveTween = null;
           }
-          this.vapeAlert = this.add
-            .image(vaper.x, vaper.y - 60, "alert")
-            .setScale(0.2)
-            .setDepth(2);
+          this.tweens.add({
+            targets: vaper,
+            scaleX: 1,
+            duration: 2000,
+            ease: "Quad.easeOut",
+            onComplete: () => {
+              vaper.scaleX = 0.3;
+            },
+          });
           this.time.delayedCall(2000, () => {
-            if (this.vapeAlert) {
-              this.vapeAlert.destroy();
-              this.vapeAlert = null;
-            }
             const cloud = this.add
               .image(vaper.x, vaper.y - 20, "vapecloud")
               .setScale(0.25)
@@ -158,7 +169,7 @@ export class BusStop extends Phaser.Scene {
             this.tweens.add({
               targets: cloud,
               scaleX: 2.8,
-              scaleY: 3,
+              scaleY: 6,
               alpha: 0,
               duration: 5000,
               ease: "Quad.easeOut",
@@ -193,15 +204,17 @@ export class BusStop extends Phaser.Scene {
             this.alert = this.add
               .image(200, 500, winner ? "trophy" : "alert")
               .setScale(0.3);
-
             this.time.delayedCall(2000, () => {
               this.alert.destroy();
               this.alert = null;
+            });
+
+            this.time.delayedCall(2000 + Math.random() * 1500, () => {
               const bus = this.matter.add
                 .image(fromRight ? 2200 : -200, 950, "bus", null, {
                   isStatic: true,
                 })
-                .setScale(0.5);
+                .setScale(0.9);
               if (winner) {
                 bus.body.winner = true;
               } else {
@@ -210,7 +223,7 @@ export class BusStop extends Phaser.Scene {
               this.tweens.add({
                 targets: bus,
                 x: fromRight ? -200 : 2200,
-                duration: 2000,
+                duration: 2500,
                 onComplete: () => {
                   bus.destroy();
                   this.cur = false;
