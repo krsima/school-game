@@ -31,7 +31,10 @@ export class GermanLesson extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { caller: this.scene.key });
+        this.scene.launch("PauseMenu", { 
+          caller: this.scene.key,
+          guide: "Überlebe den Deutschunterricht, indem du den Stühlen ausweichst und dich auf einen Stuhl setzt, wenn dies vom Lehrer verlangt wird. Du kannst die Uhren einsammeln, um Zeit zu gewinnen."
+        });
       }
     });
     

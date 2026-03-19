@@ -33,7 +33,10 @@ export class BusStop extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { caller: this.scene.key });
+        this.scene.launch("PauseMenu", {
+          caller: this.scene.key,
+          guide: "Weiche den Bussen aus und achte auf die Vaper, die gefährliche Dämpfe ausstoßen. Ein Warnsymbol zeigt an, wenn ein Bus naht. Wenn ein Vaper gleich in deiner Nähe dampft, wird dies ebenfalls angezeigt. Wenn du den Pokal siehst, lasse dich vom Bus erwischen, um einzusteigen und das Spiel zu beenden!"
+        });
       }
     });
 

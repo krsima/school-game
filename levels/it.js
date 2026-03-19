@@ -36,7 +36,10 @@ export class ITLesson extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { caller: this.scene.key });
+        this.scene.launch("PauseMenu", {
+          caller: this.scene.key,
+          guide: "Überlebe den Informatikunterricht, indem du den Gegnern ausweichst und dich zur Tür begibst. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!"
+        });
       }
     });
     

@@ -41,7 +41,10 @@ export class SportsLesson extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { caller: this.scene.key });
+        this.scene.launch("PauseMenu", {
+          caller: this.scene.key,
+          guide: "Überlebe den Sportunterricht, indem du den Gegnern ausweichst und die zwei Schlüssel sammelst, die für die Tür benötigt werden. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!"
+        });
       }
     });
 
