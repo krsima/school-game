@@ -11,6 +11,8 @@ export class PauseMenu extends Phaser.Scene {
     const cx = this.scale.width / 2;
     const cy = this.scale.height / 2;
 
+    const guide = this.scene.settings.data.guide || "Keine Anleitung verfügbar.";
+
     // Store when pause started
     this.pauseStartTime = Date.now();
 
@@ -23,14 +25,22 @@ export class PauseMenu extends Phaser.Scene {
       .setScrollFactor(0)
       .setScale(0.3); // adjust to fit screen
 
+
     // Title on chalkboard
-    this.add.text(cx, cy - 140, "PAUSIERT ", {
+    this.add.text(cx, cy - 200, "PAUSIERT ", {
       fontSize: "56px",
       fontFamily: "Caveat",  // a nice chalk-like font
       color: "#ccccff",
     }).setOrigin(0.5).setScrollFactor(0);
 
+
     // Keybindings list
+    this.add.text(cx * 0.6, cy - 110, "Steuerung:", {
+      fontSize: "40px",
+      fontFamily: "Caveat",
+      color: "#ccccff",
+    }).setOrigin(0.5).setScrollFactor(0);
+
     const controls = [
       "[A] / [←]",
       "[D] / [→]",
@@ -48,7 +58,7 @@ export class PauseMenu extends Phaser.Scene {
     ];
 
     controls.forEach((line, index) => {
-      this.add.text(cx - 20, cy - 50 + index * 50, line, {
+      this.add.text(cx * 0.6 - 20, cy - 50 + index * 50, line, {
         fontSize: "24px",
         fontFamily: "Courier",
         color: "#dddddd",
@@ -58,7 +68,7 @@ export class PauseMenu extends Phaser.Scene {
     });
 
     controlsDescription.forEach((line, index) => {
-      this.add.text(cx + 20, cy - 50 + index * 50, line, {
+      this.add.text(cx * 0.6 + 20, cy - 50 + index * 50, line, {
         fontSize: "32px",
         fontFamily: "Caveat",
         color: "#dddddd",
@@ -66,8 +76,25 @@ export class PauseMenu extends Phaser.Scene {
       }).setOrigin(0, 0.5).setScrollFactor(0); // left edge snaps to cx + 20
     });
 
+
+    // Level-specific guide
+    this.add.text(cx * 1.4, cy - 80, "Level-Anleitung:", {
+      fontSize: "40px",
+      fontFamily: "Caveat",
+      color: "#ccccff",
+    }).setOrigin(0.5).setScrollFactor(0);
+
+    this.add.text(cx * 1.4, cy - 40, guide, {
+      fontSize: "36px",
+      fontFamily: "Caveat",
+      color: "#dddddd",
+      align: "center",
+      wordWrap: { width: cx * 0.6 }, // wraps text so it stays within right half
+    }).setOrigin(0.5, 0).setScrollFactor(0);
+
+
     // Resume hint at bottom
-    this.add.text(cx, cy + 240, "Drücke [P] zum Fortsetzen", {
+    this.add.text(cx, cy + 260, "Drücke [P] zum Fortsetzen", {
       fontSize: "24px",
       fontFamily: "Courier",
       color: "#aaaaaa",
