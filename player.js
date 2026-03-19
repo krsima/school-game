@@ -12,10 +12,17 @@ let keyR;
 export { player };
 
 // Debug
-let keyTab;
+let keyAlt;
+let key1;
+let key2;
+let key3;
+let key4;
+let key5;
+let key6;
+
 export function create(scene) {
   tscene = scene;
-
+  
   // Player
   scene.player = scene.matter.add.sprite(200, 800, "player");
   player = scene.player;
@@ -61,7 +68,13 @@ export function create(scene) {
   keyR = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
   // Debug
-  keyTab = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
+  keyAlt = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT);
+  key1 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+  key2 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+  key3 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+  key4 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+  key5 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
+  key6 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
 
   cursors = scene.input.keyboard.createCursorKeys();
 
@@ -114,8 +127,25 @@ export function movement() {
   }
 
   // Debug
-  if (keyTab.isDown) {
-    tscene.scene.start("Finish");
+  if (keyAlt.isDown) {
+    if (key1.isDown) {
+      tscene.scene.start("OutsideSchool");
+    }
+    if (key2.isDown) {
+      tscene.scene.start("GermanLesson");
+    }
+    if (key3.isDown) {
+      tscene.scene.start("ITLesson");
+    }
+    if (key4.isDown) {
+      tscene.scene.start("SportsLesson");
+    }
+    if (key5.isDown) {
+      tscene.scene.start("BusStop");
+    }
+    if (key6.isDown) {
+      tscene.scene.start("Finish");
+    }
   }
 
   player.lastVelocity = player.body.velocity;
