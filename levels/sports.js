@@ -147,24 +147,7 @@ export class SportsLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor && this.doorUnlocked) {
-          this.teacherspeach = this.make
-            .text({
-              x: this.player.x,
-              y: this.player.y - 100,
-              text: "Gewonnen!",
-              style: {
-                fontSize: "24px",
-                fontFamily: "Arial",
-                color: "#ffffff",
-                align: "center",  // 'left'|'center'|'right'|'justify'
-              },
-              add: true,
-            })
-            .setOrigin(0.5, 0.5);
-
-          this.time.delayedCall(3000, () => {
-            this.scene.start("BusStop");
-          });
+          this.scene.start("BusStop");
         }
 
       }
