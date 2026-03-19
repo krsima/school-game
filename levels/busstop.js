@@ -16,6 +16,7 @@ export class BusStop extends Phaser.Scene {
     this.load.image("trophy", "assets/trophy.png");
     this.load.image("student", "assets/student.png");
     this.load.image("vaper", "assets/vaper.png");
+    this.load.image("phone", "assets/phone.jpg");
   }
 
   create() {
@@ -46,6 +47,22 @@ export class BusStop extends Phaser.Scene {
         add: true,
       })
       .setOrigin(0.5, 0.5);
+
+    this.phones = [];
+    for (let i = 0; i < 2; i++) {
+      const phone = this.matter.add.image(
+        Math.random() * WORLD_WIDTH,
+        700,
+        "phone",
+        null,
+        {
+          isStatic: true,
+          isSensor: true,
+        },
+      );
+      phone.setScale(0.1);
+      this.phones.push(phone);
+    }
 
     const studentCount = 15;
     const vaperCount = 4;
