@@ -23,11 +23,11 @@ export class BusStop extends Phaser.Scene {
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
+    this.registry.set("checkpoint", "BusStop");
 
     //Background
     this.add.image(1000, 700, "busstop").setScale(1.5).setDepth(-2);
     this.player = createPlayer(this);
-    this.player.checkpoint = "BusStop";
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 

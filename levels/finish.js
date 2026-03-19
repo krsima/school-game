@@ -26,7 +26,6 @@ export class Finish extends Phaser.Scene {
     //Background
     this.add.image(1024, 500, "background");
     var player = createPlayer(this);
-    player.checkpoint = "Finish";
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 

@@ -1,9 +1,5 @@
-import { GermanLesson } from "./levels/german.js";
-
 var player;
 let tscene;
-
-var lives = 3;
 
 var cursors;
 
@@ -120,11 +116,10 @@ export function movement() {
 }
 
 export function die() {
-  if (lives > 0) {
-    lives--;
-    tscene.scene.start(player.checkpoint);
+  if (tscene.registry.get("lives") > 1) {
+    tscene.registry.set("lives", tscene.registry.get("lives") - 1);
+    tscene.scene.start(tscene.registry.get("checkpoint"));
   } else {
-    lives = 3;
     tscene.scene.start("OutsideSchool");
   }
 }
@@ -133,14 +128,10 @@ function isOnGround() {
   for (const normal of player.collisions.values()) {
     if (
       normal.y < -0.5 ||
-      (player.body.velocity.y === 0 && player.lastVelocity.y === 0)
+      (player.body.velocity.y == 0 && player.lastVelocity.y == 0)
     ) {
       return true;
     }
   }
   return false;
-}
-
-export function getLives() {
-  return lives;
 }

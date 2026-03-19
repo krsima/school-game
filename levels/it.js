@@ -27,13 +27,14 @@ export class ITLesson extends Phaser.Scene {
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
-
+    this.registry.set("checkpoint", "ITLesson");
+    
     // Background
     this.add.image(1456, 571, "it-classroom");
     var player = createPlayer(this);
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
-
+    
     // Platforms (static Matter bodies)
     this.matter.add
       .image(600, 480, "monitor", null, { isStatic: true })

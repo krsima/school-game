@@ -26,6 +26,7 @@ export class SportsLesson extends Phaser.Scene {
     this.dead = false;
     this.keysCollected = 0;
     this.doorUnlocked = false;
+    this.registry.set("checkpoint", "SportsLesson");
 
     // Settings
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -161,7 +162,6 @@ export class SportsLesson extends Phaser.Scene {
             })
             .setOrigin(0.5, 0.5);
 
-          this.player.checkpoint = "OutsideSchool";
           this.time.delayedCall(3000, () => {
             this.scene.start("BusStop");
           });
