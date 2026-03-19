@@ -8,6 +8,9 @@ let keySpace;
 let keyD;
 let keyW;
 let keyR;
+let keyP;
+
+let onPauseCallback;    // called when P is pressed, set in create()
 
 export { player };
 
@@ -20,7 +23,8 @@ let key4;
 let key5;
 let key6;
 
-export function create(scene) {
+export function create(scene, onPause) {
+  onPauseCallback = onPause;    // store the callback
   tscene = scene;
   
   // Player
@@ -66,6 +70,7 @@ export function create(scene) {
   keyD = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
   keyW = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
   keyR = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+  keyP = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
   // Debug
   keyAlt = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT);
@@ -122,8 +127,14 @@ export function movement() {
     player.setVelocityY(-18);
   }
 
+  // Reset
   if (keyR.isDown) {
     die();
+  }
+
+  // Pause
+  if (Phaser.Input.Keyboard.JustDown(keyP) && onPauseCallback) {
+    onPauseCallback();
   }
 
   // Debug

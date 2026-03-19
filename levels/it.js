@@ -31,7 +31,15 @@ export class ITLesson extends Phaser.Scene {
     
     // Background
     this.add.image(1456, 571, "it-classroom");
-    var player = createPlayer(this);
+
+    var player = createPlayer(this, () => {
+      // Pause this scene and launch PauseMenu
+      if (!this.scene.isActive("PauseMenu")) {
+        this.scene.pause();
+        this.scene.launch("PauseMenu", { caller: this.scene.key });
+      }
+    });
+    
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
     

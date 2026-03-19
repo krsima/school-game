@@ -27,7 +27,14 @@ export class GermanLesson extends Phaser.Scene {
     this.add.image(1000, 500, "classroom").setScale(1.8);
     this.add.image(1000, 700, "teacher").setScale(1.4);
 
-    this.player = createPlayer(this);
+    this.player = createPlayer(this, () => {
+      // Pause this scene and launch PauseMenu
+      if (!this.scene.isActive("PauseMenu")) {
+        this.scene.pause();
+        this.scene.launch("PauseMenu", { caller: this.scene.key });
+      }
+    });
+    
     this.player.setPosition(1000, 500);
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);

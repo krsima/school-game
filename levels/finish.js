@@ -25,7 +25,15 @@ export class Finish extends Phaser.Scene {
 
     //Background
     this.add.image(1024, 500, "background");
-    var player = createPlayer(this);
+
+    var player = createPlayer(this, () => {
+      // Pause this scene and launch PauseMenu
+      if (!this.scene.isActive("PauseMenu")) {
+        this.scene.pause();
+        this.scene.launch("PauseMenu", { caller: this.scene.key });
+      }
+    });
+
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 

@@ -37,7 +37,14 @@ export class SportsLesson extends Phaser.Scene {
     this.add.image(1150, 500, "sports-hall").setScale(1.4);
 
     // Player & Cams
-    this.player = createPlayer(this);
+    this.player = createPlayer(this, () => {
+      // Pause this scene and launch PauseMenu
+      if (!this.scene.isActive("PauseMenu")) {
+        this.scene.pause();
+        this.scene.launch("PauseMenu", { caller: this.scene.key });
+      }
+    });
+
     this.player
       .setPosition(100, 500)
       .setDepth(10);    // rendering order

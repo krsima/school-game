@@ -1,4 +1,5 @@
 import { HUD } from "./hud.js";
+import { PauseMenu } from "./pause.js";
 import { GermanLesson } from "./levels/german.js";
 import { OutsideSchool } from "./levels/outside-school.js";
 import { ITLesson } from "./levels/it.js";
@@ -14,7 +15,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
-  scene: [OutsideSchool, GermanLesson, ITLesson, SportsLesson, BusStop, Finish, HUD],
+  scene: [OutsideSchool, GermanLesson, ITLesson, SportsLesson, BusStop, Finish, HUD, PauseMenu],
   physics: {
     default: "matter",
     matter: {

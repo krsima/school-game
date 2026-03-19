@@ -28,7 +28,15 @@ export class BusStop extends Phaser.Scene {
 
     //Background
     this.add.image(1000, 700, "busstop").setScale(1.5).setDepth(-2);
-    this.player = createPlayer(this);
+
+    this.player = createPlayer(this, () => {
+      // Pause this scene and launch PauseMenu
+      if (!this.scene.isActive("PauseMenu")) {
+        this.scene.pause();
+        this.scene.launch("PauseMenu", { caller: this.scene.key });
+      }
+    });
+
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 
