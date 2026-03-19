@@ -11,9 +11,11 @@ export class PauseMenu extends Phaser.Scene {
     const cx = this.scale.width / 2;
     const cy = this.scale.height / 2;
 
-    /* Semi-transparent dark background
-    this.add.rectangle(cx, cy, this.scale.width, this.scale.height, 0x000000, 0.5)
-      .setScrollFactor(0); */
+    // Store when pause started
+    this.pauseStartTime = Date.now();
+
+    // Also pause the HUD so update() stops running
+    this.scene.pause("HUD");
 
     // Chalkboard image centered
     this.add.image(cx, cy, "chalkboard")
@@ -22,33 +24,52 @@ export class PauseMenu extends Phaser.Scene {
       .setScale(0.3); // adjust to fit screen
 
     // Title on chalkboard
-    this.add.text(cx, cy - 120, "PAUSIERT", {
-      fontSize: "36px",
-      fontFamily: "Arial",
-      color: "#ffffff",
+    this.add.text(cx, cy - 140, "PAUSIERT ", {
+      fontSize: "56px",
+      fontFamily: "Caveat",  // a nice chalk-like font
+      color: "#ccccff",
     }).setOrigin(0.5).setScrollFactor(0);
 
     // Keybindings list
     const controls = [
-      "[A] / [←]  Nach links bewegen",
-      "[D] / [→]  Nach rechts bewegen",
-      "[W] / [Space] / [↑]  Springen",
-      "[R]  Checkpoint neu starten",
-      "[P]  Pause / Fortsetzen",
+      "[A] / [←]",
+      "[D] / [→]",
+      "[W] / [Space] / [↑]",
+      "[R]",
+      "[P]",
+    ];
+
+    const controlsDescription = [
+      "Nach links bewegen",
+      "Nach rechts bewegen",
+      "Springen",
+      "Checkpoint neu starten",
+      "Pause / Fortsetzen",
     ];
 
     controls.forEach((line, index) => {
-      this.add.text(cx, cy - 50 + index * 40, line, {
-        fontSize: "20px",
-        fontFamily: "Courier",  // monospace looks nice on a chalkboard
+      this.add.text(cx - 20, cy - 50 + index * 50, line, {
+        fontSize: "24px",
+        fontFamily: "Courier",
         color: "#dddddd",
-      }).setOrigin(0.5).setScrollFactor(0);
+        align: "right",
+        fontStyle: "bold",
+      }).setOrigin(1, 0.5).setScrollFactor(0); // right edge snaps to cx - 20
+    });
+
+    controlsDescription.forEach((line, index) => {
+      this.add.text(cx + 20, cy - 50 + index * 50, line, {
+        fontSize: "32px",
+        fontFamily: "Caveat",
+        color: "#dddddd",
+        align: "left",
+      }).setOrigin(0, 0.5).setScrollFactor(0); // left edge snaps to cx + 20
     });
 
     // Resume hint at bottom
-    this.add.text(cx, cy + 160, "Press [P] to resume", {
-      fontSize: "18px",
-      fontFamily: "Arial",
+    this.add.text(cx, cy + 240, "Drücke [P] zum Fortsetzen", {
+      fontSize: "24px",
+      fontFamily: "Courier",
       color: "#aaaaaa",
       fontStyle: "italic",
     }).setOrigin(0.5).setScrollFactor(0);

@@ -25,4 +25,7 @@ const config = {
   },
 };
 
-const game = new Phaser.Game(config);
+// Wait for font to load before starting Phaser
+document.fonts.ready.then(() => {
+  const game = new Phaser.Game(config);
+});
