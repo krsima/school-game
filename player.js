@@ -7,6 +7,7 @@ let keyA;
 let keySpace;
 let keyD;
 let keyW;
+let keyR;
 
 export { player };
 
@@ -57,6 +58,7 @@ export function create(scene) {
   keySpace = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   keyD = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
   keyW = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+  keyR = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
   // Debug
   keyTab = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
@@ -105,6 +107,10 @@ export function movement() {
   // jump
   if ((cursors.up.isDown || keyW.isDown || keySpace.isDown) && isOnGround()) {
     player.setVelocityY(-18);
+  }
+
+  if (keyR.isDown) {
+    die();
   }
 
   // Debug
