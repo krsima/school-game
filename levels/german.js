@@ -118,12 +118,13 @@ export class GermanLesson extends Phaser.Scene {
 
     let timer = 180;
 
-    this.cur = false;
+    this.curThrowing = false;
+    this.curSitting = false;
     this.time.addEvent({
       delay: 1000, // ms
       callback: () => {
         this.timerText.setText(
-          "Überlebe\n" + new Date(timer * 1000).toISOString().slice(14, 19),
+          "Überlebe den Unterricht\n" + new Date(timer * 1000).toISOString().slice(14, 19),
         );
         timer--;
         if (timer < 0) {
