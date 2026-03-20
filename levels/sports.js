@@ -10,7 +10,7 @@ export class SportsLesson extends Phaser.Scene {
 
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
-    this.load.image("sports-hall", "assets/sports-hall.jpg");     // sports-hall resolution: 1728 * 1152
+    this.load.image("sports-hall", "assets/sports-hall.jpg");
     this.load.image("walker", "assets/walker.png");
     this.load.image("table", "assets/table.png");
     this.load.image("key", "assets/key.png");
@@ -34,7 +34,7 @@ export class SportsLesson extends Phaser.Scene {
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
 
     // Background
-    this.add.image(1150, 500, "sports-hall").setScale(1.4);
+    this.add.image(1150, 500, "sports-hall").setScale(0.3);
 
     // Player & Cams
     this.player = createPlayer(this, () => {

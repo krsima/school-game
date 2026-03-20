@@ -10,7 +10,7 @@ export class GermanLesson extends Phaser.Scene {
 
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
-    this.load.image("classroom", "assets/classroom.png");
+    this.load.image("classroom", "assets/classroom.jpg");
     this.load.image("teacher", "assets/teacher.jpg");
     this.load.image("chair", "assets/chair.png");
     this.load.image("clock", "assets/clock.png");
@@ -24,7 +24,7 @@ export class GermanLesson extends Phaser.Scene {
     this.registry.set("checkpoint", "GermanLesson");
 
     //Background
-    this.add.image(1000, 500, "classroom").setScale(1.8);
+    this.add.image(1000, 500, "classroom").setScale(0.6);
     this.add.image(1000, 700, "teacher").setScale(1.4);
 
     this.player = createPlayer(this, () => {
