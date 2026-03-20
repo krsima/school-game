@@ -141,6 +141,7 @@ export class GermanLesson extends Phaser.Scene {
           this.timerText.setText("GESCHAFFT!!!");
           this.time.removeAllEvents();
           this.time.delayedCall(2500, () => {
+            this.registry.set("timeStartLoading", Date.now());
             this.scene.start("ITLesson");
           });
         }
@@ -160,6 +161,7 @@ export class GermanLesson extends Phaser.Scene {
     }
     
     this.createClock();
+    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
   }
 
   update(time, delta) {

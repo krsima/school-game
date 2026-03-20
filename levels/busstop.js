@@ -304,6 +304,7 @@ export class BusStop extends Phaser.Scene {
             die();
           }
           if (winnerInvolved) {
+            this.registry.set("timeStartLoading", Date.now());
             this.scene.start("Finish");
           }
           if (ringing) {
@@ -319,6 +320,8 @@ export class BusStop extends Phaser.Scene {
     if (!this.scene.isActive("HUD")) {
       this.scene.launch("HUD");
     }
+
+    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
   }
 
   update(time, delta) {

@@ -103,6 +103,7 @@ export class OutsideSchool extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
+          this.registry.set("timeStartLoading", Date.now());
           this.scene.start("GermanLesson");
         }
       }

@@ -143,6 +143,7 @@ export class ITLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
+          this.registry.set("timeStartLoading", Date.now());
           this.scene.start("SportsLesson");
         }
       }
@@ -224,6 +225,7 @@ export class ITLesson extends Phaser.Scene {
     if (!this.scene.isActive("HUD")) {
       this.scene.launch("HUD");
     }
+    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
   }
 
   update(time, delta) {
