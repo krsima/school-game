@@ -50,7 +50,14 @@ export class Finish extends Phaser.Scene {
       },
       add: true,
     });
-    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
+    if (this.registry.get("timeStartLoading") != null) {
+      this.registry.set(
+        "timeStart",
+        this.registry.get("timeStart") +
+          (Date.now() - this.registry.get("timeStartLoading")),
+      );
+      this.registry.set("timeStartLoading", null);
+    }
 
     this.time.delayedCall(2000, () => {
       const top10 = this.getTop10();

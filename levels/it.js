@@ -225,7 +225,14 @@ export class ITLesson extends Phaser.Scene {
     if (!this.scene.isActive("HUD")) {
       this.scene.launch("HUD");
     }
-    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
+    if (this.registry.get("timeStartLoading") != null) {
+      this.registry.set(
+        "timeStart",
+        this.registry.get("timeStart") +
+          (Date.now() - this.registry.get("timeStartLoading")),
+      );
+      this.registry.set("timeStartLoading", null);
+    }
   }
 
   update(time, delta) {

@@ -31,13 +31,14 @@ export class GermanLesson extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { 
+        this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Überlebe den Deutschunterricht, indem du den Stühlen ausweichst und dich auf einen Stuhl setzt, wenn dies vom Lehrer verlangt wird. Du kannst die Uhren einsammeln, um Zeit zu gewinnen."
+          guide:
+            "Überlebe den Deutschunterricht, indem du den Stühlen ausweichst und dich auf einen Stuhl setzt, wenn dies vom Lehrer verlangt wird. Du kannst die Uhren einsammeln, um Zeit zu gewinnen.",
         });
       }
     });
-    
+
     this.player.setPosition(1000, 500);
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -134,7 +135,8 @@ export class GermanLesson extends Phaser.Scene {
       delay: 1000, // ms
       callback: () => {
         this.timerText.setText(
-          "Überlebe den Unterricht\n" + new Date(timer * 1000).toISOString().slice(14, 19),
+          "Überlebe den Unterricht\n" +
+            new Date(timer * 1000).toISOString().slice(14, 19),
         );
         timer--;
         if (timer < 0) {
@@ -159,9 +161,16 @@ export class GermanLesson extends Phaser.Scene {
     if (!this.scene.isActive("HUD")) {
       this.scene.launch("HUD");
     }
-    
+
     this.createClock();
-    this.registry.set("timeStart", this.registry.get("timeStart") + (Date.now() - this.registry.get("timeStartLoading")));
+    if (this.registry.get("timeStartLoading") != null) {
+      this.registry.set(
+        "timeStart",
+        this.registry.get("timeStart") +
+          (Date.now() - this.registry.get("timeStartLoading")),
+      );
+      this.registry.set("timeStartLoading", null);
+    }
   }
 
   update(time, delta) {
