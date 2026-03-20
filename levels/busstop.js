@@ -62,8 +62,8 @@ export class BusStop extends Phaser.Scene {
     this.phones = [];
     for (let i = 0; i < 2; i++) {
       const phone = this.matter.add.image(
-        Math.random() * WORLD_WIDTH,
-        700,
+        i == 0 ? 400 : 1600,
+        850,
         "phone",
         null,
         {
@@ -71,7 +71,7 @@ export class BusStop extends Phaser.Scene {
           isSensor: true,
         },
       );
-      phone.setScale(0.1);
+      phone.setScale(0.4);
       this.phones.push(phone);
     }
 
@@ -216,19 +216,18 @@ export class BusStop extends Phaser.Scene {
       loop: true,
     });
 
-    this.time.delayedCall((60 + Math.random() * 60) * 1000, () => {
-      this.nextBusWin = true;
-    });
+    this.timer = 60;
 
     this.cur = false;
     this.time.addEvent({
       delay: 1000, // ms
       callback: () => {
+        this.timer--;
         if (!this.cur) {
-          if (Math.random() < 0.1) {
+          if (Math.random() < 0.1 || this.timer < 1) {
             this.cur = true;
             const fromRight = Math.random() < 0.5;
-            let winner = this.nextBusWin;
+            let winner = this.timer < 1;
             this.alert = this.add
               .image(200, 500, winner ? "trophy" : "alert")
               .setScale(0.3);
@@ -260,6 +259,32 @@ export class BusStop extends Phaser.Scene {
             });
           }
         }
+        if (Math.random() < 0.2) {
+          const phone = Phaser.Utils.Array.GetRandom(this.phones);
+          if (phone.body.ringing) {
+            return;
+          }
+          const originalX = phone.x;
+          const originalY = phone.y;
+          phone.body.ringing = this.tweens.add({
+            targets: phone,
+            x: originalX + (Math.random() - 0.5) * 20,
+            y: originalY + (Math.random() - 0.5) * 20,
+            duration: 100,
+            ease: "Sine.easeInOut",
+            yoyo: true,
+            repeat: 5,
+            loop: 2,
+            loopDelay: 1200,
+            onComplete: () => {
+              phone.setPosition(originalX, originalY);
+              phone.body.ringing = null;
+              this.timer += 10;
+            },
+          });
+        }
+          
+          
       },
       loop: true,
     });
@@ -273,12 +298,18 @@ export class BusStop extends Phaser.Scene {
         if (playerInvolved) {
           let instaDeathInvolved = bodyA.instaKill || bodyB.instaKill;
           let winnerInvolved = bodyA.winner || bodyB.winner;
+          let ringing = bodyA.ringing || bodyB.ringing;
 
           if (instaDeathInvolved) {
             die();
           }
           if (winnerInvolved) {
             this.scene.start("Finish");
+          }
+          if (ringing) {
+            ringing.stop();
+            bodyA.ringing = null;
+            bodyB.ringing = null;
           }
         }
       });
@@ -291,6 +322,7 @@ export class BusStop extends Phaser.Scene {
   }
 
   update(time, delta) {
+    this.text.text = this.timer;
     if (this.alert != null) {
       this.alert.setPosition(
         this.cameras.main.scrollX + this.cameras.main.width / 2,

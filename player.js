@@ -78,7 +78,7 @@ export function create(scene, onPause) {
   key2 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
   key3 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
   key4 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
-  key5 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE);
+  key5 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
   key6 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
 
   cursors = scene.input.keyboard.createCursorKeys();
@@ -151,12 +151,12 @@ export function movement() {
     if (key4.isDown) {
       tscene.scene.start("SportsLesson");
     }
-    if (key5.isDown) {
-      tscene.scene.start("BusStop");
-    }
     if (key6.isDown) {
       tscene.scene.start("Finish");
     }
+  }
+  if (key5.isDown) {
+    tscene.scene.start("BusStop");
   }
 
   player.lastVelocity = player.body.velocity;
