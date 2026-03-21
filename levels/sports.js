@@ -19,6 +19,8 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("box", "assets/box.png");
     this.load.image("plank", "assets/plank.png");
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("collect", ["assets/sounds/collect.ogg", "assets/sounds/collect.mp4"]);
   }
 
   create() {
@@ -154,8 +156,11 @@ export class SportsLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor && this.doorUnlocked) {
-          this.registry.set("timeStartLoading", Date.now());
-          this.scene.start("BusStop");
+          this.sound.play("win");
+          this.time.delayedCall(100, () => {          
+            this.registry.set("timeStartLoading", Date.now());
+            this.scene.start("BusStop");
+          });
         }
       }
     });
@@ -210,9 +215,11 @@ export class SportsLesson extends Phaser.Scene {
         // Player touches key
         if (objA === this.player && this.keys.includes(objB)) {
           collectKey.call(this, objB);
+          this.sound.play("collect");
         }
         if (objB === this.player && this.keys.includes(objA)) {
           collectKey.call(this, objA);
+          this.sound.play("collect");
         }
 
         // Player touches enemy → death

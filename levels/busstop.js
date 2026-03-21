@@ -17,6 +17,7 @@ export class BusStop extends Phaser.Scene {
     this.load.image("student", "assets/student.png");
     this.load.image("vaper", "assets/vaper.png");
     this.load.image("phone", "assets/phone.jpg");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
   }
 
   create() {
@@ -304,8 +305,11 @@ export class BusStop extends Phaser.Scene {
             die();
           }
           if (winnerInvolved) {
-            this.registry.set("timeStartLoading", Date.now());
-            this.scene.start("Finish");
+            this.sound.play("win");
+            this.time.delayedCall(100, () => {
+              this.registry.set("timeStartLoading", Date.now());
+              this.scene.start("Finish");
+            });
           }
           if (ringing) {
             ringing.stop();

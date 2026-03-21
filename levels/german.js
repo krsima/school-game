@@ -17,6 +17,7 @@ export class GermanLesson extends Phaser.Scene {
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
     this.load.audio("sit_down", "assets/sounds/sit_down.mp3");
     this.load.audio("throw", "assets/sounds/throw.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
   }
 
   create() {
@@ -148,6 +149,7 @@ export class GermanLesson extends Phaser.Scene {
         if (timer < 0) {
           this.timerText.setText("GESCHAFFT!!!");
           this.time.removeAllEvents();
+          this.sound.play("win");
           this.time.delayedCall(2500, () => {
             this.registry.set("timeStartLoading", Date.now());
             this.scene.start("ITLesson");

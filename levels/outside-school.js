@@ -14,6 +14,8 @@ export class OutsideSchool extends Phaser.Scene {
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
   }
 
   create() {
@@ -26,6 +28,8 @@ export class OutsideSchool extends Phaser.Scene {
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
+
+    this.sound.add("bg_music").setVolume(0.2).setLoop(true).play();
 
     //Background
     this.add.image(1024, 500, "background");
@@ -105,8 +109,11 @@ export class OutsideSchool extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
-          this.registry.set("timeStartLoading", Date.now());
-          this.scene.start("GermanLesson");
+          this.sound.play("win");
+          this.time.delayedCall(100, () => {
+            this.registry.set("timeStartLoading", Date.now());
+            this.scene.start("GermanLesson");
+          });
         }
       }
     });

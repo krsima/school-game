@@ -19,6 +19,7 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
   }
 
   create() {
@@ -148,8 +149,11 @@ export class ITLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
-          this.registry.set("timeStartLoading", Date.now());
-          this.scene.start("SportsLesson");
+          this.sound.play("win");
+          this.time.delayedCall(100, () => {
+            this.registry.set("timeStartLoading", Date.now());
+            this.scene.start("SportsLesson");
+          });
         }
       }
     });
