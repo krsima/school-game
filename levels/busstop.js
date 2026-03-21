@@ -21,6 +21,7 @@ export class BusStop extends Phaser.Scene {
 
   create() {
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
@@ -35,7 +36,8 @@ export class BusStop extends Phaser.Scene {
         this.scene.pause();
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Weiche den Bussen aus und achte auf die Vaper, die gefährliche Dämpfe ausstoßen. Ein Warnsymbol zeigt an, wenn ein Bus naht. Wenn ein Vaper gleich in deiner Nähe dampft, wird dies ebenfalls angezeigt. Wenn du den Pokal siehst, lasse dich vom Bus erwischen, um einzusteigen und das Spiel zu beenden!"
+          guide:
+            "Weiche den Bussen aus und achte auf die Vaper, die gefährliche Dämpfe ausstoßen. Ein Warnsymbol zeigt an, wenn ein Bus naht. Wenn ein Vaper gleich in deiner Nähe dampft, wird dies ebenfalls angezeigt. Wenn du den Pokal siehst, lasse dich vom Bus erwischen, um einzusteigen und das Spiel zu beenden!",
         });
       }
     });
@@ -283,8 +285,6 @@ export class BusStop extends Phaser.Scene {
             },
           });
         }
-          
-          
       },
       loop: true,
     });

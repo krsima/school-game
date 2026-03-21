@@ -19,6 +19,7 @@ export class Finish extends Phaser.Scene {
 
   create() {
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);

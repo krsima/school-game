@@ -10,7 +10,7 @@ let keyW;
 let keyR;
 let keyP;
 
-let onPauseCallback;    // called when P is pressed, set in create()
+let onPauseCallback; // called when P is pressed, set in create()
 
 export { player };
 
@@ -24,9 +24,9 @@ let key5;
 let key6;
 
 export function create(scene, onPause) {
-  onPauseCallback = onPause;    // store the callback
+  onPauseCallback = onPause; // store the callback
   tscene = scene;
-  
+
   // Player
   scene.player = scene.matter.add.sprite(200, 800, "player");
   player = scene.player;

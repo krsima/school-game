@@ -14,14 +14,20 @@ export class GermanLesson extends Phaser.Scene {
     this.load.image("teacher", "assets/teacher.jpg");
     this.load.image("chair", "assets/chair.png");
     this.load.image("clock", "assets/clock.png");
+    this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
+    this.load.audio("sit_down", "assets/sounds/sit_down.mp3");
+    this.load.audio("throw", "assets/sounds/throw.mp3");
   }
 
   create() {
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1);
     this.registry.set("checkpoint", "GermanLesson");
+
+    this.sound.add("classroom_noises").setVolume(0.4).setLoop(true).play();
 
     //Background
     this.add.image(1000, 500, "classroom").setScale(0.6);
@@ -226,6 +232,9 @@ export class GermanLesson extends Phaser.Scene {
         repeat: 40,
       });
       this.curThrowing = true;
+      this.time.delayedCall(700, () => {
+        this.sound.play("throw");
+      });
       this.time.delayedCall(1000, () => {
         chair.setVelocity(0, Math.max(0.8, Math.random()) * -45);
       });
@@ -241,6 +250,7 @@ export class GermanLesson extends Phaser.Scene {
   sitDown() {
     this.curSitting = true;
     this.teacherspeach.setText("HINSETZEN!!!");
+    this.sound.play("sit_down");
     this.time.delayedCall(3000, () => {
       var shoulddie = true;
       this.player.collisions.keys().forEach((obj) => {

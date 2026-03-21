@@ -18,17 +18,21 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("table", "assets/table.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
+    this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
   }
 
   create() {
     this.dead = false;
 
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
     this.registry.set("checkpoint", "ITLesson");
-    
+
+    this.sound.add("classroom_noises").setVolume(0.4).setLoop(true).play();
+
     // Background
     this.add.image(1456, 571, "it-classroom");
 
@@ -38,14 +42,15 @@ export class ITLesson extends Phaser.Scene {
         this.scene.pause();
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Überlebe den Informatikunterricht, indem du den Gegnern ausweichst und dich zur Tür begibst. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!"
+          guide:
+            "Überlebe den Informatikunterricht, indem du den Gegnern ausweichst und dich zur Tür begibst. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!",
         });
       }
     });
-    
+
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
-    
+
     // Platforms (static Matter bodies)
     this.matter.add
       .image(600, 480, "monitor", null, { isStatic: true })

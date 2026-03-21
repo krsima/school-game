@@ -22,6 +22,7 @@ export class OutsideSchool extends Phaser.Scene {
     this.registry.set("checkpoint", "OutsideSchool");
 
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
@@ -33,9 +34,10 @@ export class OutsideSchool extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { 
+        this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der linken Seite angezeigt werden."
+          guide:
+            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der linken Seite angezeigt werden.",
         });
       }
     });

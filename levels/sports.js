@@ -18,10 +18,10 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("door", "assets/door.png");
     this.load.image("box", "assets/box.png");
     this.load.image("plank", "assets/plank.png");
+    this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
   }
 
   create() {
-
     // State variables
     this.dead = false;
     this.keysCollected = 0;
@@ -29,9 +29,12 @@ export class SportsLesson extends Phaser.Scene {
     this.registry.set("checkpoint", "SportsLesson");
 
     // Settings
+    this.sound.stopAll();
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
+
+    this.sound.add("classroom_noises").setVolume(0.4).setLoop(true).play();
 
     // Background
     this.add.image(1150, 500, "sports-hall").setScale(0.3);
@@ -43,32 +46,32 @@ export class SportsLesson extends Phaser.Scene {
         this.scene.pause();
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Überlebe den Sportunterricht, indem du den Gegnern ausweichst und die zwei Schlüssel sammelst, die für die Tür benötigt werden. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!"
+          guide:
+            "Überlebe den Sportunterricht, indem du den Gegnern ausweichst und die zwei Schlüssel sammelst, die für die Tür benötigt werden. Nutze die beweglichen Plattformen und achte darauf, nicht herunterzufallen!",
         });
       }
     });
 
-    this.player
-      .setPosition(100, 500)
-      .setDepth(10);    // rendering order
+    this.player.setPosition(100, 500).setDepth(10); // rendering order
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 
     // World
-    this.make.text({
-      x: 100,
-      y: 740,
-      text: "Sammle die zwei Schlüssel ein um die Tür zu öffnen",
-      style: {
-        fontSize: "24px",
-        fontFamily: "Arial",
-        color: "#ffffff",
-        align: "center", // 'left'|'center'|'right'|'justify'
-      },
-      add: true,
-    }).setDepth(15);
-
+    this.make
+      .text({
+        x: 100,
+        y: 740,
+        text: "Sammle die zwei Schlüssel ein um die Tür zu öffnen",
+        style: {
+          fontSize: "24px",
+          fontFamily: "Arial",
+          color: "#ffffff",
+          align: "center", // 'left'|'center'|'right'|'justify'
+        },
+        add: true,
+      })
+      .setDepth(15);
 
     // Platforms (static Matter bodies)
     this.matter.add
@@ -76,23 +79,20 @@ export class SportsLesson extends Phaser.Scene {
       .setScale(0.12);
     this.matter.add
       .image(700, 450, "box", null, { isStatic: true })
-      .setScale(0.12)
+      .setScale(0.12);
 
-    this.matter.add.rectangle(200, 400, 340, 70, { isStatic: true });   // physics body for bag platform (x, y, width, height)
+    this.matter.add.rectangle(200, 400, 340, 70, { isStatic: true }); // physics body for bag platform (x, y, width, height)
 
-    const bagPositions1 = [
-      50, 130, 210, 290, 370
-    ];
+    const bagPositions1 = [50, 130, 210, 290, 370];
     this.bags = bagPositions1.map((x) => {
-      const bag = this.add.image(x, 400, "backpack");    // visual for bag platform
+      const bag = this.add.image(x, 400, "backpack"); // visual for bag platform
       bag.setScale(0.08);
       return bag;
     });
 
-
     // Moving Platforms
-    var movingPlank1 = this.matter.add    // in the center of level
-      .image(1500, 600, "plank")    // right start
+    var movingPlank1 = this.matter.add // in the center of level
+      .image(1500, 600, "plank") // right start
       .setScale(0.2)
       .setFixedRotation()
       .setMass(1000)
@@ -100,17 +100,17 @@ export class SportsLesson extends Phaser.Scene {
 
     this.tweens.add({
       targets: movingPlank1,
-      x: 1000,    // left end
+      x: 1000, // left end
       y: 500,
-      ease: "Linear",   // 'Cubic', 'Elastic', 'Bounce', 'Back', 'Linear'
+      ease: "Linear", // 'Cubic', 'Elastic', 'Bounce', 'Back', 'Linear'
       duration: 3000,
-      repeat: -1,   // -1: infinity
+      repeat: -1, // -1: infinity
       yoyo: true,
 
       // interpolation: null,
     });
 
-    var movingPlank2 = this.matter.add    // at the end of level
+    var movingPlank2 = this.matter.add // at the end of level
       .image(2200, 150, "plank")
       .setScale(0.2)
       .setFixedRotation()
@@ -126,10 +126,9 @@ export class SportsLesson extends Phaser.Scene {
       repeat: -1,
       yoyo: true,
     });
-    
 
     // Floor
-    this.matter.add.rectangle(150, 925, 300, 20, { isStatic: true });   // physics body for spawn platform
+    this.matter.add.rectangle(150, 925, 300, 20, { isStatic: true }); // physics body for spawn platform
     this.add.image(100, 965, "table").setScale(0.15);
     this.add.image(200, 965, "table").setScale(0.15);
 
@@ -137,11 +136,10 @@ export class SportsLesson extends Phaser.Scene {
       .image(800, 965, "table", null, { isStatic: true })
       .setScale(0.15);
 
-    this.matter.add.rectangle(1530, 925, 400, 20, { isStatic: true });   // physics body for platform
-    this.add.image(1430, 965, "table").setScale(0.15);    // visual for platform
+    this.matter.add.rectangle(1530, 925, 400, 20, { isStatic: true }); // physics body for platform
+    this.add.image(1430, 965, "table").setScale(0.15); // visual for platform
     this.add.image(1530, 965, "table").setScale(0.15);
 
-    
     // Door (sensor for scene transition)
     const door = this.matter.add.image(200, 865, "door", null, {
       isStatic: true,
@@ -151,7 +149,6 @@ export class SportsLesson extends Phaser.Scene {
 
     this.matter.world.on("collisionstart", (event) => {
       for (const pair of event.pairs) {
-
         const involvesPlayer =
           pair.bodyA === this.player.body || pair.bodyB === this.player.body;
         const involvesDoor =
@@ -160,44 +157,47 @@ export class SportsLesson extends Phaser.Scene {
           this.registry.set("timeStartLoading", Date.now());
           this.scene.start("BusStop");
         }
-
       }
     });
-
 
     // Keys and locks
     this.keys = [];
 
-    const key1 = this.matter.add.image(1800, 150, "key", null, {
-      isStatic: true,
-      isSensor: true
-    }).setScale(0.1);
+    const key1 = this.matter.add
+      .image(1800, 150, "key", null, {
+        isStatic: true,
+        isSensor: true,
+      })
+      .setScale(0.1);
 
-    const key2 = this.matter.add.image(50, 150, "key", null, {
-      isStatic: true,
-      isSensor: true
-    }).setScale(0.1);
+    const key2 = this.matter.add
+      .image(50, 150, "key", null, {
+        isStatic: true,
+        isSensor: true,
+      })
+      .setScale(0.1);
 
     this.keys.push(key1, key2);
 
     this.lock = this.add.image(200, 865, "lock").setScale(0.08).setDepth(6);
-
 
     // Enemy groups
     this.walkers = this.add.group();
     this.rockets = this.add.group();
 
     // Walker spawns
-    this.time.delayedCall(4000, () => {   // Walker on table
+    this.time.delayedCall(4000, () => {
+      // Walker on table
       spawnWalker.call(this, 1600, 880, 1345, 1625);
     });
-    this.time.delayedCall(100, () => {    // Walker on bags, goes left
+    this.time.delayedCall(100, () => {
+      // Walker on bags, goes left
       spawnWalker.call(this, 200, 350, 33, 380);
     });
-    this.time.delayedCall(100, () => {    // Walker on bags, goes right
-      spawnWalker.call(this, 300, 350, 33, 380, 1);   
+    this.time.delayedCall(100, () => {
+      // Walker on bags, goes right
+      spawnWalker.call(this, 300, 350, 33, 380, 1);
     });
-
 
     // Handle collisions
     this.matter.world.on("collisionstart", (event) => {
@@ -217,10 +217,8 @@ export class SportsLesson extends Phaser.Scene {
 
         // Player touches enemy → death
         if (
-          (objA === this.player &&
-            (this.walkers.contains(objB))) ||
-          (objB === this.player &&
-            (this.walkers.contains(objA)))
+          (objA === this.player && this.walkers.contains(objB)) ||
+          (objB === this.player && this.walkers.contains(objA))
         ) {
           if (!this.dead) {
             this.dead = true;
@@ -272,7 +270,6 @@ export class SportsLesson extends Phaser.Scene {
   }
 
   update(time, delta) {
-
     movement();
 
     // Player falls off the map
@@ -300,9 +297,7 @@ export class SportsLesson extends Phaser.Scene {
         walker.direction = -1;
       }
     });
-
   }
-
 }
 
 // Spawn enemies
@@ -325,7 +320,6 @@ function spawnWalker(x, y, leftBound, rightBound, direction = -1) {
 
 // Collect keys and unlock door
 function collectKey(key) {
-
   // safety: ignore if key already collected
   if (!key || key._collected) return;
 
@@ -338,15 +332,15 @@ function collectKey(key) {
 
   // 2) prevent any further collisions right away
   if (key.body) {
-    key.body.collisionFilter.mask = 0;        // set collision mask to 0 so it collides with nothing
-    key.body.collisionFilter.category = 0;    // optionally also set category to 0
-    key.body.isSensor = true;                 // ensure it's a sensor (no blocking)
+    key.body.collisionFilter.mask = 0; // set collision mask to 0 so it collides with nothing
+    key.body.collisionFilter.category = 0; // optionally also set category to 0
+    key.body.isSensor = true; // ensure it's a sensor (no blocking)
   }
 
   // 3) remove from your keys array so checks like this.keys.includes() won't find it
   if (Array.isArray(this.keys)) {
-    this.keys = this.keys.filter(k => k !== key);
-  } else if (this.keys && typeof this.keys.remove === 'function') {
+    this.keys = this.keys.filter((k) => k !== key);
+  } else if (this.keys && typeof this.keys.remove === "function") {
     // if keys was a Group
     this.keys.remove(key, true, true);
   }
@@ -377,5 +371,4 @@ function collectKey(key) {
       }
     });
   }
-
 }
