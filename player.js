@@ -46,9 +46,9 @@ export function create(scene, onPause) {
       if (pair.bodyA.isSensor || pair.bodyB.isSensor) return;
 
       if (bodyA.gameObject === player) {
-        player.collisions.set(bodyB.gameObject, collision.normal);
+        player.collisions.set(bodyB, collision.normal); // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.set(bodyA.gameObject, {
+        player.collisions.set(bodyA, {               // use body as key, not gameObject
           x: -collision.normal.x,
           y: -collision.normal.y,
         });
@@ -61,9 +61,9 @@ export function create(scene, onPause) {
       const { bodyA, bodyB } = pair;
 
       if (bodyA.gameObject === player) {
-        player.collisions.delete(bodyB.gameObject);
+        player.collisions.delete(bodyB);              // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.delete(bodyA.gameObject);
+        player.collisions.delete(bodyA);              // use body as key, not gameObject
       }
     });
   });
