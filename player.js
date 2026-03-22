@@ -17,7 +17,7 @@ let footstepCooldown = 0;
 export { player };
 
 // Debug
-let keyM;
+let keySemicolon;
 let key1;
 let key2;
 let key3;
@@ -77,7 +77,9 @@ export function create(scene, onPause) {
   keyP = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
   // Debug
-  keyM = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+  keySemicolon = scene.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.SEMICOLON,
+  );
   key1 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
   key2 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
   key3 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
@@ -142,7 +144,7 @@ export function movement() {
   }
 
   // Debug
-  if (keyM.isDown) {
+  if (keySemicolon.isDown) {
     tscene.registry.set("cheats", true);
   }
 
