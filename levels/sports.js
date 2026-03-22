@@ -68,22 +68,6 @@ export class SportsLesson extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 
-    // World
-    this.make
-      .text({
-        x: 100,
-        y: 740,
-        text: "Sammle die zwei Schlüssel ein um die Tür zu öffnen",
-        style: {
-          fontSize: "24px",
-          fontFamily: "Arial",
-          color: "#ffffff",
-          align: "center", // 'left'|'center'|'right'|'justify'
-        },
-        add: true,
-      })
-      .setDepth(15);
-
     // Platforms (static Matter bodies)
     this.matter.add
       .image(1800, 740, "box", null, { isStatic: true })

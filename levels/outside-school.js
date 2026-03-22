@@ -22,10 +22,11 @@ export class OutsideSchool extends Phaser.Scene {
   }
 
   create() {
-    // Show level intro and pause the game until the player clicks "Start"
+    // Show game intro and pause the game until the player clicks "Start"
     this.scene.launch("PauseMenu", {
       caller: "OutsideSchool",
-      guide: "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links).",
+      guide: 
+        "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
       welcome: true,
     });
     this.scene.pause();
@@ -65,20 +66,6 @@ export class OutsideSchool extends Phaser.Scene {
 
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
-
-    // World
-    this.make.text({
-      x: 150,
-      y: 700,
-      text: "A und D zum Bewegen\nLeertaste zum Springen",
-      style: {
-        fontSize: "24px",
-        fontFamily: "Arial",
-        color: "#ffffff",
-        align: "center", // 'left'|'center'|'right'|'justify'
-      },
-      add: true,
-    });
 
     // Platforms (static Matter bodies)
     this.matter.add
