@@ -11,6 +11,7 @@ export class ITLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("it-classroom", "assets/it-classroom.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("walker", "assets/walker.png");
     this.load.image("rocketL", "assets/rocketL.png");
     this.load.image("rocketR", "assets/rocketR.png");

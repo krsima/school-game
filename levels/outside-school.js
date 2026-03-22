@@ -11,6 +11,7 @@ export class OutsideSchool extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/outside.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
@@ -21,6 +22,14 @@ export class OutsideSchool extends Phaser.Scene {
   }
 
   create() {
+    // Show level intro and pause the game until the player clicks "Start"
+    this.scene.launch("PauseMenu", {
+      caller: "OutsideSchool",
+      guide: "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links).",
+      welcome: true,
+    });
+    this.scene.pause();
+
     this.registry.set("timeStart", Date.now());
     this.registry.set("lives", 3);
     this.registry.set("checkpoint", "OutsideSchool");
@@ -49,7 +58,7 @@ export class OutsideSchool extends Phaser.Scene {
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
           guide:
-            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der linken Seite angezeigt werden.",
+            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links).",
         });
       }
     });

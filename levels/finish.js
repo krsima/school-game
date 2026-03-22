@@ -11,6 +11,7 @@ export class Finish extends Phaser.Scene {
 
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("background", "assets/outside.jpg");
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");

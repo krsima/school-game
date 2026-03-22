@@ -11,6 +11,7 @@ export class SportsLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("sports-hall", "assets/sports-hall.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("walker", "assets/walker.png");
     this.load.image("table", "assets/table.png");
     this.load.image("key", "assets/key.png");

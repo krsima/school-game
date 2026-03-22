@@ -11,6 +11,7 @@ export class GermanLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("classroom", "assets/classroom.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("teacher", "assets/teacher.jpg");
     this.load.image("chair", "assets/chair.png");
     this.load.image("clock", "assets/clock.png");

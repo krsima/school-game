@@ -11,6 +11,7 @@ export class BusStop extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("busstop", "assets/busstop.png");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("bus", "assets/bus.png");
     this.load.image("alert", "assets/alert.png");
     this.load.image("trophy", "assets/trophy.png");
