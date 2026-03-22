@@ -146,7 +146,7 @@ export class SportsLesson extends Phaser.Scene {
       .image(800, 965, "table", null, { isStatic: true })
       .setScale(0.15);
 
-    this.matter.add.rectangle(1530, 925, 400, 20, { isStatic: true }); // physics body for platform
+    this.matter.add.rectangle(1480, 925, 300, 20, { isStatic: true }); // physics body for platform
     this.add.image(1430, 965, "table").setScale(0.15); // visual for platform
     this.add.image(1530, 965, "table").setScale(0.15);
 
