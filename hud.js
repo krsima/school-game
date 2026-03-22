@@ -12,6 +12,9 @@ export class HUD extends Phaser.Scene {
   create() {
     this.hearts = [];
 
+    this.keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    this.muted = false;
+
     // Draw 4 hearts side-by-side in the top-left corner
     for (let i = 0; i < 3; i++) {
       const heart = this.add.image(30 + i * 40, 30, "heart").setScale(0.2);
@@ -39,6 +42,10 @@ export class HUD extends Phaser.Scene {
   update() {
     this.updateHearts();
     this.text.text = formatTime(Date.now() - this.registry.get("timeStart"));
+    if (Phaser.Input.Keyboard.JustDown(this.keyM)) {
+    this.muted = !this.muted;
+    this.sound.setMute(this.muted);  // mute ALL sounds globally
+    }
   }
 
   updateHearts() {

@@ -12,6 +12,8 @@ let keyP;
 
 let onPauseCallback; // called when P is pressed, set in create()
 
+let footstepCooldown = 0;
+
 export { player };
 
 // Debug
@@ -26,6 +28,7 @@ let key6;
 export function create(scene, onPause) {
   onPauseCallback = onPause; // store the callback
   tscene = scene;
+  tscene.sound.stopByKey("footstep"); // kill leftover instances
 
   // Player
   scene.player = scene.matter.add.sprite(200, 800, "player");
@@ -43,9 +46,9 @@ export function create(scene, onPause) {
       if (pair.bodyA.isSensor || pair.bodyB.isSensor) return;
 
       if (bodyA.gameObject === player) {
-        player.collisions.set(bodyB.gameObject, collision.normal);
+        player.collisions.set(bodyB, collision.normal); // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.set(bodyA.gameObject, {
+        player.collisions.set(bodyA, {               // use body as key, not gameObject
           x: -collision.normal.x,
           y: -collision.normal.y,
         });
@@ -58,9 +61,9 @@ export function create(scene, onPause) {
       const { bodyA, bodyB } = pair;
 
       if (bodyA.gameObject === player) {
-        player.collisions.delete(bodyB.gameObject);
+        player.collisions.delete(bodyB);              // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.delete(bodyA.gameObject);
+        player.collisions.delete(bodyA);              // use body as key, not gameObject
       }
     });
   });
@@ -159,10 +162,21 @@ export function movement() {
     tscene.scene.start("BusStop");
   }
 
+  // Footstep sound
+  const moving = Math.abs(player.body.velocity.x) > 0.5;
+  footstepCooldown -= 1;
+
+  if (moving && isOnGround() && footstepCooldown <= 0) {
+    tscene.sound.stopByKey("footstep");           // dont overlap
+    tscene.sound.play("footstep", { volume: 0.3 });
+    footstepCooldown = 22;                        // ~22 frames @ 60fps ≈ 0.37s Pause
+  }
+
   player.lastVelocity = player.body.velocity;
 }
 
 export function die() {
+  tscene.sound.play("death", { volume: 0.8 });
   if (tscene.registry.get("lives") > 1) {
     tscene.registry.set("lives", tscene.registry.get("lives") - 1);
     tscene.scene.start(tscene.registry.get("checkpoint"));

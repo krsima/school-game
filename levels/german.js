@@ -11,17 +11,27 @@ export class GermanLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("classroom", "assets/classroom.jpg");
-    this.load.image("teacher", "assets/teacher.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
+    this.load.image("teacher", "assets/teacher.png");
     this.load.image("chair", "assets/chair.png");
     this.load.image("clock", "assets/clock.png");
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
     this.load.audio("sit_down", "assets/sounds/sit_down.mp3");
     this.load.audio("throw", "assets/sounds/throw.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1);
@@ -148,6 +158,7 @@ export class GermanLesson extends Phaser.Scene {
         if (timer < 0) {
           this.timerText.setText("GESCHAFFT!!!");
           this.time.removeAllEvents();
+          this.sound.play("win");
           this.time.delayedCall(2500, () => {
             this.registry.set("timeStartLoading", Date.now());
             this.scene.start("ITLesson");
@@ -214,7 +225,7 @@ export class GermanLesson extends Phaser.Scene {
         Math.random() < 0.4 ||
         chair.body.velocity.y != 0 ||
         (this.curSitting &&
-          this.player.collisions.keys().some((v) => v === chair))
+          this.player.collisions.keys().some((v) => v.gameObject === chair))
       ) {
         return;
       }
@@ -253,8 +264,8 @@ export class GermanLesson extends Phaser.Scene {
     this.sound.play("sit_down");
     this.time.delayedCall(3000, () => {
       var shoulddie = true;
-      this.player.collisions.keys().forEach((obj) => {
-        if (this.chairs.includes(obj)) {
+      this.player.collisions.keys().forEach((body) => {
+        if (this.chairs.includes(body.gameObject)) {
           shoulddie = false;
         }
       });

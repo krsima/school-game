@@ -11,18 +11,27 @@ export class Finish extends Phaser.Scene {
 
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("background", "assets/outside.jpg");
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
+    this.registry.set("checkpoint", "OutsideSchool");
 
     //Background
     this.add.image(1024, 500, "background");
@@ -31,7 +40,10 @@ export class Finish extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { caller: this.scene.key });
+        this.scene.launch("PauseMenu", { 
+          caller: this.scene.key,
+          guide: "Du hast es geschafft! Du kannst hier die Bestenliste sehen.\n\nDrücke [R] um das Spiel neu zu beginnen.",
+        });
       }
     });
 
@@ -66,7 +78,7 @@ export class Finish extends Phaser.Scene {
 
     this.time.delayedCall(100, () => {
       var playerName = prompt(
-        "Welcher Name soll auf dem Leaderboard erscheinen?",
+        "Gib deinen Namen ein, um dich in die Bestenliste einzutragen.",
       );
       this.submitScore(playerName, Date.now() - this.registry.get("timeStart"));
     });

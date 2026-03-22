@@ -11,6 +11,7 @@ export class ITLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("it-classroom", "assets/it-classroom.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("walker", "assets/walker.png");
     this.load.image("rocketL", "assets/rocketL.png");
     this.load.image("rocketR", "assets/rocketR.png");
@@ -19,13 +20,23 @@ export class ITLesson extends Phaser.Scene {
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("whoosh", ["assets/sounds/whoosh.wav", "assets/sounds/whoosh.mp3"]);
   }
 
   create() {
     this.dead = false;
 
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
@@ -148,6 +159,7 @@ export class ITLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
+          this.sound.play("win");
           this.registry.set("timeStartLoading", Date.now());
           this.scene.start("SportsLesson");
         }
@@ -281,6 +293,32 @@ export class ITLesson extends Phaser.Scene {
         rocket.setPosition(WORLD_WIDTH - 50, rocket.y);
       }
     });
+
+    // Whoosh sound based on nearest rocket distance
+    const MAX_DIST = 600;
+    let nearestDist = Infinity;
+
+    this.rockets.getChildren().forEach((rocket) => {
+      const dist = Phaser.Math.Distance.Between(
+        this.player.x, this.player.y,
+        rocket.x, rocket.y
+      );
+      if (dist < nearestDist) nearestDist = dist;
+    });
+
+    if (nearestDist < MAX_DIST) {
+      const vol = (1 - nearestDist / MAX_DIST) * 0.8; // max volume 0.8
+      const whoosh = this.sound.get("whoosh");
+      if (!whoosh) {
+        this.sound.add("whoosh").setVolume(vol).setLoop(true).play();
+      } else {
+        whoosh.setVolume(vol);
+        if (!whoosh.isPlaying) whoosh.play();
+      }
+    } else {
+      this.sound.stopByKey("whoosh");
+    }
+
   }
 }
 

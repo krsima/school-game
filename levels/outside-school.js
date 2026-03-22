@@ -11,21 +11,43 @@ export class OutsideSchool extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("background", "assets/outside.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
+    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {
+    // Show game intro and pause the game until the player clicks "Start"
+    this.scene.launch("PauseMenu", {
+      caller: "OutsideSchool",
+      guide: 
+        "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
+      welcome: true,
+    });
+    this.scene.pause();
+
     this.registry.set("timeStart", Date.now());
     this.registry.set("lives", 3);
     this.registry.set("checkpoint", "OutsideSchool");
 
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
+
+    this.sound.add("bg_music").setVolume(0.1).setLoop(true).play();
 
     //Background
     this.add.image(1024, 500, "background");
@@ -37,27 +59,13 @@ export class OutsideSchool extends Phaser.Scene {
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
           guide:
-            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der linken Seite angezeigt werden.",
+            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links).",
         });
       }
     });
 
     this.cameras.main.startFollow(player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
-
-    // World
-    this.make.text({
-      x: 150,
-      y: 700,
-      text: "A und D zum Bewegen\nLeertaste zum Springen",
-      style: {
-        fontSize: "24px",
-        fontFamily: "Arial",
-        color: "#ffffff",
-        align: "center", // 'left'|'center'|'right'|'justify'
-      },
-      add: true,
-    });
 
     // Platforms (static Matter bodies)
     this.matter.add
@@ -105,6 +113,7 @@ export class OutsideSchool extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor) {
+          this.sound.play("win");
           this.registry.set("timeStartLoading", Date.now());
           this.scene.start("GermanLesson");
         }

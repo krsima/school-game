@@ -11,6 +11,7 @@ export class SportsLesson extends Phaser.Scene {
   preload() {
     this.load.atlas("player", "assets/player.png", "assets/player.json");
     this.load.image("sports-hall", "assets/sports-hall.jpg");
+    this.load.image("chalkboard", "assets/chalkboard.jpg");
     this.load.image("walker", "assets/walker.png");
     this.load.image("table", "assets/table.png");
     this.load.image("key", "assets/key.png");
@@ -19,6 +20,10 @@ export class SportsLesson extends Phaser.Scene {
     this.load.image("box", "assets/box.png");
     this.load.image("plank", "assets/plank.png");
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
+    this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("collect", ["assets/sounds/collect.ogg", "assets/sounds/collect.mp4"]);
+    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {
@@ -29,7 +34,13 @@ export class SportsLesson extends Phaser.Scene {
     this.registry.set("checkpoint", "SportsLesson");
 
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
@@ -56,22 +67,6 @@ export class SportsLesson extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
-
-    // World
-    this.make
-      .text({
-        x: 100,
-        y: 740,
-        text: "Sammle die zwei Schlüssel ein um die Tür zu öffnen",
-        style: {
-          fontSize: "24px",
-          fontFamily: "Arial",
-          color: "#ffffff",
-          align: "center", // 'left'|'center'|'right'|'justify'
-        },
-        add: true,
-      })
-      .setDepth(15);
 
     // Platforms (static Matter bodies)
     this.matter.add
@@ -136,7 +131,7 @@ export class SportsLesson extends Phaser.Scene {
       .image(800, 965, "table", null, { isStatic: true })
       .setScale(0.15);
 
-    this.matter.add.rectangle(1530, 925, 400, 20, { isStatic: true }); // physics body for platform
+    this.matter.add.rectangle(1480, 925, 300, 20, { isStatic: true }); // physics body for platform
     this.add.image(1430, 965, "table").setScale(0.15); // visual for platform
     this.add.image(1530, 965, "table").setScale(0.15);
 
@@ -154,6 +149,7 @@ export class SportsLesson extends Phaser.Scene {
         const involvesDoor =
           pair.bodyA === door.body || pair.bodyB === door.body;
         if (involvesPlayer && involvesDoor && this.doorUnlocked) {
+          this.sound.play("win");     
           this.registry.set("timeStartLoading", Date.now());
           this.scene.start("BusStop");
         }
@@ -210,9 +206,11 @@ export class SportsLesson extends Phaser.Scene {
         // Player touches key
         if (objA === this.player && this.keys.includes(objB)) {
           collectKey.call(this, objB);
+          this.sound.play("collect");
         }
         if (objB === this.player && this.keys.includes(objA)) {
           collectKey.call(this, objA);
+          this.sound.play("collect");
         }
 
         // Player touches enemy → death
