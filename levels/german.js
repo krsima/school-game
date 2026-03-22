@@ -19,8 +19,14 @@ export class GermanLesson extends Phaser.Scene {
     this.load.audio("sit_down", "assets/sounds/sit_down.mp3");
     this.load.audio("throw", "assets/sounds/throw.mp3");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
-    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
-    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("death", [
+      "assets/sounds/death.wav",
+      "assets/sounds/death.mp3",
+    ]);
+    this.load.audio("footstep", [
+      "assets/sounds/footstep.ogg",
+      "assets/sounds/footstep.mp3",
+    ]);
   }
 
   create() {
@@ -219,7 +225,6 @@ export class GermanLesson extends Phaser.Scene {
   }
 
   throwChairs() {
-    console.log(this.player.collisions.keys());
     this.chairs.forEach((chair) => {
       if (
         Math.random() < 0.4 ||

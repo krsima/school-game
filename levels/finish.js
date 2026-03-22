@@ -143,7 +143,6 @@ export class Finish extends Phaser.Scene {
 }
 
 function formatLeaderboard(leaderboard) {
-  console.log(leaderboard, typeof leaderboard);
   return leaderboard
     .map((entry, index) => {
       return `${index + 1}. ${entry.name} (${formatTime(entry.time)})`;

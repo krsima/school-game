@@ -318,7 +318,6 @@ export class BusStop extends Phaser.Scene {
         const { bodyA, bodyB, collision } = pair;
         let playerInvolved =
           bodyA === this.player.body || bodyB === this.player.body;
-        console.log(bodyA, bodyB);
         if (playerInvolved) {
           let instaDeathInvolved = bodyA.instaKill || bodyB.instaKill;
           let winnerInvolved = bodyA.winner || bodyB.winner;

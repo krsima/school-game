@@ -36,6 +36,33 @@ export class HUD extends Phaser.Scene {
       add: true,
     });
 
+    this.loading = this.make.text({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      text: "",
+      style: {
+        fontSize: "24px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        align: "center", // 'left'|'center'|'right'|'justify'
+      },
+      add: true,
+    });
+    this.registry.events.on(
+      "changedata",
+      (parent, key, data) => {
+        console.log(key);
+        if (key === "timeStartLoading") {
+          if (data == null) {
+            this.loading.text = "";
+          } else {
+            this.loading.text = "Loading...";
+          }
+        }
+      },
+      this,
+    );
+
     this.updateHearts();
   }
 
@@ -43,8 +70,8 @@ export class HUD extends Phaser.Scene {
     this.updateHearts();
     this.text.text = formatTime(Date.now() - this.registry.get("timeStart"));
     if (Phaser.Input.Keyboard.JustDown(this.keyM)) {
-    this.muted = !this.muted;
-    this.sound.setMute(this.muted);  // mute ALL sounds globally
+      this.muted = !this.muted;
+      this.sound.setMute(this.muted); // mute ALL sounds globally
     }
   }
 

@@ -16,22 +16,32 @@ export class OutsideSchool extends Phaser.Scene {
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
-    this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
-    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
-    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("bg_music", [
+      "assets/sounds/music.wav",
+      "assets/sounds/music.mp3",
+    ]);
+    this.load.audio("death", [
+      "assets/sounds/death.wav",
+      "assets/sounds/death.mp3",
+    ]);
+    this.load.audio("footstep", [
+      "assets/sounds/footstep.ogg",
+      "assets/sounds/footstep.mp3",
+    ]);
   }
 
   create() {
     // Show game intro and pause the game until the player clicks "Start"
     this.scene.launch("PauseMenu", {
       caller: "OutsideSchool",
-      guide: 
+      guide:
         "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
       welcome: true,
     });
     this.scene.pause();
 
     this.registry.set("timeStart", Date.now());
+    this.registry.set("timeStartLoading", false);
     this.registry.set("lives", 3);
     this.registry.set("checkpoint", "OutsideSchool");
 
