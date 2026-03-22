@@ -47,6 +47,7 @@ export class PauseMenu extends Phaser.Scene {
       "[W] / [Space] / [↑]",
       "[R]",
       "[P]",
+      "[M]",
     ];
 
     const controlsDescription = [
@@ -55,6 +56,7 @@ export class PauseMenu extends Phaser.Scene {
       "Springen",
       "Checkpoint neu starten",
       "Pause / Fortsetzen",
+      "Musik an/aus",
     ];
 
     controls.forEach((line, index) => {
