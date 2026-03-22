@@ -19,9 +19,18 @@ export class BusStop extends Phaser.Scene {
     this.load.image("vaper", "assets/vaper.png");
     this.load.image("phone", "assets/phone.png");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
-    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
-    this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
-    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("death", [
+      "assets/sounds/death.wav",
+      "assets/sounds/death.mp3",
+    ]);
+    this.load.audio("bg_music", [
+      "assets/sounds/music.wav",
+      "assets/sounds/music.mp3",
+    ]);
+    this.load.audio("footstep", [
+      "assets/sounds/footstep.ogg",
+      "assets/sounds/footstep.mp3",
+    ]);
   }
 
   create() {
@@ -50,7 +59,7 @@ export class BusStop extends Phaser.Scene {
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
           guide:
-            "Weiche den Bussen aus und achte auf die Vaper, die gefährliche Dämpfe ausstoßen. Ein Warnsymbol zeigt an, wenn ein Bus naht. Wenn ein Vaper gleich in deiner Nähe dampft, wird dies ebenfalls angezeigt.\nOben siehst du eine Zahl, die herunterzählt. Wenn du die Telefone nicht berührst, wird die Zahl wieder größer.\nWenn die Zahl auf null sinkt, wird ein Pokal angezeigt. Du musst dich dann vom Bus erwischen lassen, um einzusteigen und das Spiel zu beenden!",
+            "Weiche den Bussen aus und achte auf die Vaper, die gefährliche Dämpfe ausstoßen. Ein Warnsymbol zeigt an, wenn ein Bus naht. Wenn ein Vaper gleich in deiner Nähe dampft, wird dies ebenfalls angezeigt.\nWenn du die Telefone nicht rechtzeitig berührst, kommt dein Bus später.\nSobald ein Pokal angezeigt wird musst dich dann vom Bus erwischen lassen, um einzusteigen und das Spiel zu beenden!",
         });
       }
     });
@@ -274,7 +283,8 @@ export class BusStop extends Phaser.Scene {
             });
           }
         }
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.2 && !this.ringing) {
+          this.ringing = true;
           const phone = Phaser.Utils.Array.GetRandom(this.phones);
           if (phone.body.ringing) {
             return;
@@ -294,6 +304,7 @@ export class BusStop extends Phaser.Scene {
             onComplete: () => {
               phone.setPosition(originalX, originalY);
               phone.body.ringing = null;
+              this.ringing = false;
               this.timer += 10;
             },
           });
@@ -322,6 +333,7 @@ export class BusStop extends Phaser.Scene {
             this.scene.start("Finish");
           }
           if (ringing) {
+            this.ringing = false;
             ringing.stop();
             bodyA.ringing = null;
             bodyB.ringing = null;
@@ -346,7 +358,6 @@ export class BusStop extends Phaser.Scene {
   }
 
   update(time, delta) {
-    this.text.text = this.timer;
     if (this.alert != null) {
       this.alert.setPosition(
         this.cameras.main.scrollX + this.cameras.main.width / 2,

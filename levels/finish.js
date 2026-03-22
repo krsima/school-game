@@ -16,7 +16,10 @@ export class Finish extends Phaser.Scene {
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
-    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("footstep", [
+      "assets/sounds/footstep.ogg",
+      "assets/sounds/footstep.mp3",
+    ]);
   }
 
   create() {
@@ -40,9 +43,10 @@ export class Finish extends Phaser.Scene {
       // Pause this scene and launch PauseMenu
       if (!this.scene.isActive("PauseMenu")) {
         this.scene.pause();
-        this.scene.launch("PauseMenu", { 
+        this.scene.launch("PauseMenu", {
           caller: this.scene.key,
-          guide: "Du hast es geschafft! Du kannst hier die Bestenliste sehen.\n\nDrücke [R] um das Spiel neu zu beginnen.",
+          guide:
+            "Du hast es geschafft! Du kannst hier die Bestenliste sehen.\n\nDrücke [R] um das Spiel neu zu beginnen.",
         });
       }
     });
@@ -55,6 +59,19 @@ export class Finish extends Phaser.Scene {
       x: 150,
       y: 700,
       text: "Leaderboard loading...",
+      style: {
+        fontSize: "24px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        align: "center", // 'left'|'center'|'right'|'justify'
+      },
+      add: true,
+    });
+
+    this.make.text({
+      x: 700,
+      y: 500,
+      text: "Danke fürs Spielen!",
       style: {
         fontSize: "24px",
         fontFamily: "Arial",
