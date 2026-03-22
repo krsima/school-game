@@ -149,7 +149,7 @@ export class GermanLesson extends Phaser.Scene {
 
     // Timetable
 
-    let timer = 180;
+    let timer = 120;
 
     this.curThrowing = false;
     this.curSitting = false;
