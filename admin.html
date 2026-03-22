@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <body>
+    <h2>Leaderboard Admin</h2>
+
+    <button onclick="deleteAll()">Delete ALL Entries</button>
+
+    <pre id="output">Loading...</pre>
+
+    <script>
+      const API_URL = "https://https-proxy.tamion.workers.dev/";
+
+      let adminPassword = prompt("Enter admin password:");
+
+      async function loadLeaderboard() {
+        try {
+          const res = await fetch(API_URL + "/raw", {
+            headers: {
+              "X-Admin-Password": adminPassword,
+            },
+          });
+
+          if (!res.ok) {
+            document.getElementById("output").textContent =
+              "Failed to load leaderboard (wrong password?)";
+            return;
+          }
+
+          const data = await res.json();
+
+          renderLeaderboard(data);
+        } catch (err) {
+          document.getElementById("output").textContent =
+            "Error loading leaderboard";
+        }
+      }
+
+      function renderLeaderboard(data) {
+        const output = document.getElementById("output");
+
+        output.innerHTML = "";
+
+        if (data.length === 0) {
+          output.textContent = "No entries.";
+          return;
+        }
+
+        data.forEach((entry, index) => {
+          const line = document.createElement("div");
+
+          line.textContent =
+            index + ". " + entry.name + " (" + entry.time + " ms) ";
+
+          const btn = document.createElement("button");
+          btn.textContent = "Delete";
+
+          btn.onclick = () => deleteEntry(index);
+
+          line.appendChild(btn);
+
+          output.appendChild(line);
+        });
+      }
+
+      async function deleteEntry(index) {
+        if (!confirm("Delete entry " + index + "?")) return;
+
+        await fetch(API_URL + "/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Password": adminPassword,
+          },
+          body: JSON.stringify({
+            index: index,
+          }),
+        });
+
+        loadLeaderboard();
+      }
+
+      async function deleteAll() {
+        if (!confirm("DELETE ALL ENTRIES?")) return;
+
+        await fetch(API_URL + "/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Password": adminPassword,
+          },
+          body: JSON.stringify({
+            index: -1,
+          }),
+        });
+
+        loadLeaderboard();
+      }
+
+      // Load on start
+      loadLeaderboard();
+    </script>
+  </body>
+</html>
