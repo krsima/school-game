@@ -17,7 +17,7 @@ export class BusStop extends Phaser.Scene {
     this.load.image("trophy", "assets/trophy.png");
     this.load.image("student", "assets/student.png");
     this.load.image("vaper", "assets/vaper.png");
-    this.load.image("phone", "assets/phone.jpg");
+    this.load.image("phone", "assets/phone.png");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
     this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
     this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
