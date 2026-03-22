@@ -12,6 +12,8 @@ let keyP;
 
 let onPauseCallback; // called when P is pressed, set in create()
 
+let footstepCooldown = 0;
+
 export { player };
 
 // Debug
@@ -26,6 +28,7 @@ let key6;
 export function create(scene, onPause) {
   onPauseCallback = onPause; // store the callback
   tscene = scene;
+  tscene.sound.stopByKey("footstep"); // kill leftover instances
 
   // Player
   scene.player = scene.matter.add.sprite(200, 800, "player");
@@ -159,11 +162,14 @@ export function movement() {
     tscene.scene.start("BusStop");
   }
 
-  const moving = cursors.left.isDown || keyA.isDown || cursors.right.isDown || keyD.isDown;
-  if (moving && isOnGround()) {
-    if (!tscene.sound.get("footstep")?.isPlaying) {
-      tscene.sound.play("footstep", { volume: 0.3 });
-    }
+  // Footstep sound
+  const moving = Math.abs(player.body.velocity.x) > 0.5;
+  footstepCooldown -= 1;
+
+  if (moving && isOnGround() && footstepCooldown <= 0) {
+    tscene.sound.stopByKey("footstep");           // dont overlap
+    tscene.sound.play("footstep", { volume: 0.3 });
+    footstepCooldown = 22;                        // ~22 frames @ 60fps ≈ 0.37s Pause
   }
 
   player.lastVelocity = player.body.velocity;
