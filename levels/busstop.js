@@ -18,15 +18,25 @@ export class BusStop extends Phaser.Scene {
     this.load.image("vaper", "assets/vaper.png");
     this.load.image("phone", "assets/phone.jpg");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
+    this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
   }
 
   create() {
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
     this.registry.set("checkpoint", "BusStop");
+
+    this.sound.add("bg_music").setVolume(0.1).setLoop(true).play();
 
     //Background
     this.add.image(1000, 700, "busstop").setScale(1.5).setDepth(-2);
@@ -306,10 +316,8 @@ export class BusStop extends Phaser.Scene {
           }
           if (winnerInvolved) {
             this.sound.play("win");
-            this.time.delayedCall(100, () => {
-              this.registry.set("timeStartLoading", Date.now());
-              this.scene.start("Finish");
-            });
+            this.registry.set("timeStartLoading", Date.now());
+            this.scene.start("Finish");
           }
           if (ringing) {
             ringing.stop();

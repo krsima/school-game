@@ -163,6 +163,7 @@ export function movement() {
 }
 
 export function die() {
+  tscene.sound.play("death", { volume: 0.8 });
   if (tscene.registry.get("lives") > 1) {
     tscene.registry.set("lives", tscene.registry.get("lives") - 1);
     tscene.scene.start(tscene.registry.get("checkpoint"));

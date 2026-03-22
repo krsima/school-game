@@ -19,7 +19,13 @@ export class Finish extends Phaser.Scene {
 
   create() {
     // Settings
-    this.sound.stopAll();
+    this.sound.stopByKey("classroom_noises");
+    this.sound.stopByKey("collect");
+    this.sound.stopByKey("footstep");
+    this.sound.stopByKey("bg_music");
+    this.sound.stopByKey("sit_down");
+    this.sound.stopByKey("throw");
+    this.sound.stopByKey("whoosh");
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT + 100);
     this.cameras.main.setZoom((window.innerWidth / 1920) * 1.3);
