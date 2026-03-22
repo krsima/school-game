@@ -225,7 +225,7 @@ export class GermanLesson extends Phaser.Scene {
         Math.random() < 0.4 ||
         chair.body.velocity.y != 0 ||
         (this.curSitting &&
-          this.player.collisions.keys().some((v) => v === chair))
+          this.player.collisions.keys().some((v) => v.gameObject === chair))
       ) {
         return;
       }
@@ -264,8 +264,8 @@ export class GermanLesson extends Phaser.Scene {
     this.sound.play("sit_down");
     this.time.delayedCall(3000, () => {
       var shoulddie = true;
-      this.player.collisions.keys().forEach((obj) => {
-        if (this.chairs.includes(obj)) {
+      this.player.collisions.keys().forEach((body) => {
+        if (this.chairs.includes(body.gameObject)) {
           shoulddie = false;
         }
       });
