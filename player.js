@@ -17,7 +17,7 @@ let footstepCooldown = 0;
 export { player };
 
 // Debug
-let keyAlt;
+let keyM;
 let key1;
 let key2;
 let key3;
@@ -48,7 +48,8 @@ export function create(scene, onPause) {
       if (bodyA.gameObject === player) {
         player.collisions.set(bodyB, collision.normal); // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.set(bodyA, {               // use body as key, not gameObject
+        player.collisions.set(bodyA, {
+          // use body as key, not gameObject
           x: -collision.normal.x,
           y: -collision.normal.y,
         });
@@ -61,9 +62,9 @@ export function create(scene, onPause) {
       const { bodyA, bodyB } = pair;
 
       if (bodyA.gameObject === player) {
-        player.collisions.delete(bodyB);              // use body as key, not gameObject
+        player.collisions.delete(bodyB); // use body as key, not gameObject
       } else if (bodyB.gameObject === player) {
-        player.collisions.delete(bodyA);              // use body as key, not gameObject
+        player.collisions.delete(bodyA); // use body as key, not gameObject
       }
     });
   });
@@ -76,13 +77,13 @@ export function create(scene, onPause) {
   keyP = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
   // Debug
-  keyAlt = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT);
-  key1 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
-  key2 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
-  key3 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
-  key4 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
-  key5 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
-  key6 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
+  keyM = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+  key1 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+  key2 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+  key3 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+  key4 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.V);
+  key5 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+  key6 = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
 
   cursors = scene.input.keyboard.createCursorKeys();
 
@@ -141,7 +142,11 @@ export function movement() {
   }
 
   // Debug
-  if (keyAlt.isDown) {
+  if (keyM.isDown) {
+    tscene.registry.set("cheats", true);
+  }
+
+  if (tscene.registry.get("cheats")) {
     if (key1.isDown) {
       tscene.scene.start("OutsideSchool");
     }
@@ -154,12 +159,12 @@ export function movement() {
     if (key4.isDown) {
       tscene.scene.start("SportsLesson");
     }
+    if (key5.isDown) {
+      tscene.scene.start("BusStop");
+    }
     if (key6.isDown) {
       tscene.scene.start("Finish");
     }
-  }
-  if (key5.isDown) {
-    tscene.scene.start("BusStop");
   }
 
   // Footstep sound
@@ -167,9 +172,9 @@ export function movement() {
   footstepCooldown -= 1;
 
   if (moving && isOnGround() && footstepCooldown <= 0) {
-    tscene.sound.stopByKey("footstep");           // dont overlap
+    tscene.sound.stopByKey("footstep"); // dont overlap
     tscene.sound.play("footstep", { volume: 0.3 });
-    footstepCooldown = 22;                        // ~22 frames @ 60fps ≈ 0.37s Pause
+    footstepCooldown = 22; // ~22 frames @ 60fps ≈ 0.37s Pause
   }
 
   player.lastVelocity = player.body.velocity;
