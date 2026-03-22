@@ -22,6 +22,7 @@ export class SportsLesson extends Phaser.Scene {
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
     this.load.audio("collect", ["assets/sounds/collect.ogg", "assets/sounds/collect.mp4"]);
     this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {

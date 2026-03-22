@@ -20,6 +20,7 @@ export class BusStop extends Phaser.Scene {
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
     this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
     this.load.audio("bg_music", ["assets/sounds/music.wav", "assets/sounds/music.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {

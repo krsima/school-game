@@ -159,6 +159,13 @@ export function movement() {
     tscene.scene.start("BusStop");
   }
 
+  const moving = cursors.left.isDown || keyA.isDown || cursors.right.isDown || keyD.isDown;
+  if (moving && isOnGround()) {
+    if (!tscene.sound.get("footstep")?.isPlaying) {
+      tscene.sound.play("footstep", { volume: 0.3 });
+    }
+  }
+
   player.lastVelocity = player.body.velocity;
 }
 

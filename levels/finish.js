@@ -15,6 +15,7 @@ export class Finish extends Phaser.Scene {
     this.load.image("backpack", "assets/backpack.png");
     this.load.image("plank", "assets/plank.png");
     this.load.image("door", "assets/door.png");
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
   }
 
   create() {

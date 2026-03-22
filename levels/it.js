@@ -21,6 +21,8 @@ export class ITLesson extends Phaser.Scene {
     this.load.audio("classroom_noises", "assets/sounds/classroom_noises.mp3");
     this.load.audio("win", ["assets/sounds/win.wav", "assets/sounds/win.mp4"]);
     this.load.audio("death", ["assets/sounds/death.wav", "assets/sounds/death.mp3"]);
+    this.load.audio("footstep", ["assets/sounds/footstep.ogg", "assets/sounds/footstep.mp3"]);
+    this.load.audio("whoosh", ["assets/sounds/whoosh.wav", "assets/sounds/whoosh.mp3"]);
   }
 
   create() {
@@ -290,6 +292,32 @@ export class ITLesson extends Phaser.Scene {
         rocket.setPosition(WORLD_WIDTH - 50, rocket.y);
       }
     });
+
+    // Whoosh sound based on nearest rocket distance
+    const MAX_DIST = 600;
+    let nearestDist = Infinity;
+
+    this.rockets.getChildren().forEach((rocket) => {
+      const dist = Phaser.Math.Distance.Between(
+        this.player.x, this.player.y,
+        rocket.x, rocket.y
+      );
+      if (dist < nearestDist) nearestDist = dist;
+    });
+
+    if (nearestDist < MAX_DIST) {
+      const vol = (1 - nearestDist / MAX_DIST) * 0.8; // max volume 0.8
+      const whoosh = this.sound.get("whoosh");
+      if (!whoosh) {
+        this.sound.add("whoosh").setVolume(vol).setLoop(true).play();
+      } else {
+        whoosh.setVolume(vol);
+        if (!whoosh.isPlaying) whoosh.play();
+      }
+    } else {
+      this.sound.stopByKey("whoosh");
+    }
+
   }
 }
 
