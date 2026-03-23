@@ -32,13 +32,16 @@ export class OutsideSchool extends Phaser.Scene {
 
   create() {
     // Show game intro and pause the game until the player clicks "Start"
-    this.scene.launch("PauseMenu", {
-      caller: "OutsideSchool",
-      guide:
-        "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
-      welcome: true,
-    });
-    this.scene.pause();
+    if (!document.cookie.includes("hasPlayed=true")) {
+      this.scene.launch("PauseMenu", {
+        caller: "OutsideSchool",
+        guide:
+          "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
+        welcome: true,
+      });
+      this.scene.pause();
+      document.cookie = "hasPlayed=true; max-age=31536000";
+    }
 
     this.registry.set("timeStart", Date.now());
     this.registry.set("timeStartLoading", null);
