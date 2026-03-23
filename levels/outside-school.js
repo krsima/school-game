@@ -36,7 +36,7 @@ export class OutsideSchool extends Phaser.Scene {
       this.scene.launch("PauseMenu", {
         caller: "OutsideSchool",
         guide:
-          "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
+          "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der zweiten Seite angezeigt werden (Pfeil nach rechts). Du kannst jederzeit [P] drücken, um ins Pause-Menü zu gelangen und die jeweilige Level-Anleitung zu sehen.",
         welcome: true,
       });
       this.scene.pause();
@@ -72,7 +72,7 @@ export class OutsideSchool extends Phaser.Scene {
         this.scene.launch("PauseMenu", {
           caller: this.scene.key,
           guide:
-            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der ersten Seite angezeigt werden (Pfeil nach links).",
+            "Versuche, zur Tür zu gelangen, um ins Schulgebäude zu kommen. Benutze dafür die Tasten, die dir auf der zweiten Seite angezeigt werden (Pfeil nach rechts).",
         });
       }
     });

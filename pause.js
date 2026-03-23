@@ -47,12 +47,12 @@ export class PauseMenu extends Phaser.Scene {
 
     // --- Build pages ---
     this.pages = [];
-    this.buildPage0(cx, cy);        // Page 0: Controls
-    this.buildPage1(cx, cy, guide); // Page 1: Level guide
+    this.buildPage0(cx, cy, guide); // Page 0: Level guide
+    this.buildPage1(cx, cy);        // Page 1: Controls
 
     this.currentPage = -1; // force refresh on first showPage call
-    // Welcome mode: show guide (page 1) first so new players see what to do
-    this.showPage(this.isWelcome ? 1 : 0);
+    // Welcome mode: show guide (page 0) first so new players see what to do
+    this.showPage(0);
 
     // --- Input ---
     this.input.keyboard.on("keydown-LEFT",  () => this.showPage(0));
@@ -65,7 +65,7 @@ export class PauseMenu extends Phaser.Scene {
   }
 
   // Page 0: title + keybindings
-  buildPage0(cx, cy) {
+  buildPage1(cx, cy) {
     const objects = [];
     const title = this.isWelcome ? "WILLKOMMEN! " : "PAUSIERT ";
 
@@ -108,7 +108,7 @@ export class PauseMenu extends Phaser.Scene {
   }
 
   // Page 1: title + level guide, vertically centered as a block
-  buildPage1(cx, cy, guide) {
+  buildPage0(cx, cy, guide) {
     const objects = [];
     const title = this.isWelcome ? "WILLKOMMEN! " : "PAUSIERT ";
 
