@@ -109,16 +109,28 @@ export function create(scene, onPause) {
 }
 
 export function movement() {
+  const onGround = isOnGround();
+
   if (cursors.left.isDown || keyA.isDown) {
     player.setVelocityX(Math.max(-7, player.body.velocity.x - 0.7));
-    player.anims.play("walk", true);
+    if (onGround) {
+      player.anims.play("walk", true);
+    } else {
+      player.anims.stop();
+      player.setFrame("p1_jump");
+    }
     player.flipX = true;
   } else if (cursors.right.isDown || keyD.isDown) {
     player.setVelocityX(Math.min(7, player.body.velocity.x + 0.7));
-    player.anims.play("walk", true);
+    if (onGround) {
+      player.anims.play("walk", true);
+    } else {
+      player.anims.stop();
+      player.setFrame("p1_jump");
+    }
     player.flipX = false;
   } else {
-    const deacceleration = isOnGround() ? 0.7 : 0.17;
+    const deacceleration = onGround ? 0.7 : 0.17;
     var newVelocity = Math.max(
       Math.abs(player.body.velocity.x) - deacceleration,
       0,
@@ -126,10 +138,15 @@ export function movement() {
     player.setVelocityX(
       player.body.velocity.x > 0 ? newVelocity : -newVelocity,
     );
-    player.anims.play("idle", true);
+    if (onGround) {
+      player.anims.play("idle", true);
+    } else {
+      player.anims.stop();
+      player.setFrame("p1_jump");
+    }
   }
   // jump
-  if ((cursors.up.isDown || keyW.isDown || keySpace.isDown) && isOnGround()) {
+  if ((cursors.up.isDown || keyW.isDown || keySpace.isDown) && onGround) {
     player.setVelocityY(-18);
   }
 
@@ -173,7 +190,7 @@ export function movement() {
   const moving = Math.abs(player.body.velocity.x) > 0.5;
   footstepCooldown -= 1;
 
-  if (moving && isOnGround() && footstepCooldown <= 0) {
+  if (moving && onGround && footstepCooldown <= 0) {
     tscene.sound.stopByKey("footstep"); // dont overlap
     tscene.sound.play("footstep", { volume: 0.3 });
     footstepCooldown = 22; // ~22 frames @ 60fps ≈ 0.37s Pause
