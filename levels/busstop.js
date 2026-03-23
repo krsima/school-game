@@ -64,6 +64,8 @@ export class BusStop extends Phaser.Scene {
       }
     });
 
+    this.player.setDepth(10);
+
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setBackgroundColor("#ccccff");
 
