@@ -45,7 +45,7 @@ export class ITLesson extends Phaser.Scene {
     this.sound.add("classroom_noises").setVolume(0.4).setLoop(true).play();
 
     // Background
-    this.add.image(1456, 571, "it-classroom");
+    this.add.image(1500, 771, "it-classroom").setScale(1.5);
 
     var player = createPlayer(this, () => {
       // Pause this scene and launch PauseMenu
