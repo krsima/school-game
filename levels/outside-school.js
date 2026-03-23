@@ -41,7 +41,7 @@ export class OutsideSchool extends Phaser.Scene {
     this.scene.pause();
 
     this.registry.set("timeStart", Date.now());
-    this.registry.set("timeStartLoading", false);
+    this.registry.set("timeStartLoading", null);
     this.registry.set("lives", 3);
     this.registry.set("checkpoint", "OutsideSchool");
 
