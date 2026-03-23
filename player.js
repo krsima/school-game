@@ -146,7 +146,6 @@ export function movement() {
   // Debug
   if (keyPeriod.isDown) {
     tscene.registry.set("cheats", true);
-    console.log("Cheats enabled!");
   }
 
   if (tscene.registry.get("cheats")) {
